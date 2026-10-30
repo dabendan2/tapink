@@ -18,20 +18,29 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Android SDK (API 35 & Build-Tools 35.0.0)
-        uses: android-actions/setup-android@v3
-
       - name: Install Android Platform 35, Build-Tools 35.0.0, Kotlin & Bundletool
         run: |
-          yes | sdkmanager "platforms;android-35" "build-tools;35.0.0" >/dev/null
-          mkdir -p "$ANDROID_SDK_ROOT/bundletool"
+          SDK_ROOT="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-/usr/local/lib/android/sdk}}"
+          export ANDROID_SDK_ROOT="$SDK_ROOT"
+          echo "ANDROID_SDK_ROOT=$SDK_ROOT" >> $GITHUB_ENV
+          SDKMANAGER=$(find "$SDK_ROOT/cmdline-tools" -name sdkmanager -type f 2>/dev/null | sort -V | tail -n 1)
+          if [ -z "$SDKMANAGER" ]; then
+            mkdir -p "$SDK_ROOT/cmdline-tools"
+            curl -sSL https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -o /tmp/cmdtools.zip
+            unzip -q /tmp/cmdtools.zip -d /tmp/cmdtools
+            mv /tmp/cmdtools/cmdline-tools "$SDK_ROOT/cmdline-tools/latest"
+            SDKMANAGER="$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+          fi
+          yes | "$SDKMANAGER" --sdk_root="$SDK_ROOT" --licenses >/dev/null || true
+          yes | "$SDKMANAGER" --sdk_root="$SDK_ROOT" "platforms;android-35" "build-tools;35.0.0" >/dev/null
+          mkdir -p "$SDK_ROOT/bundletool"
           curl -sSL https://github.com/google/bundletool/releases/download/1.17.2/bundletool-all-1.17.2.jar \
-            -o "$ANDROID_SDK_ROOT/bundletool/bundletool.jar"
+            -o "$SDK_ROOT/bundletool/bundletool.jar"
           if ! command -v kotlinc >/dev/null 2>&1; then
             curl -sSL https://github.com/JetBrains/kotlin/releases/download/v1.9.24/kotlin-compiler-1.9.24.zip -o /tmp/kotlin.zip
             unzip -q /tmp/kotlin.zip -d /tmp
@@ -100,7 +109,7 @@ jobs:
 
   ios-xcode-ci:
     name: Build iOS App & Share Extension via XcodeGen (macOS)
-    runs-on: macos-14
+    runs-on: macos-latest
 
     steps:
       - name: Checkout Repository
@@ -113,7 +122,9 @@ jobs:
 
       - name: Install XcodeGen & Generate TapInk.xcodeproj
         run: |
-          brew install xcodegen
+          if ! command -v xcodegen >/dev/null 2>&1; then
+            brew install xcodegen
+          fi
           cd ios
           xcodegen generate
 
