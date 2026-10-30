@@ -3,14 +3,15 @@
   "version": "2.4.0",
   "private": true,
   "license": "MIT",
-  "description": "TapInk (瞬墨): Instant NFC E-Paper & E-Ink Updater with Direct Share Sheet, Auto Hardware Detection & 4-Color Floyd-Steinberg Dithering",
+  "description": "TapInk (瞬墨): Cross-Platform (Android & iOS) Instant NFC E-Paper & E-Ink Updater with Direct Share Sheet, Auto Hardware Detection & 4-Color Floyd-Steinberg Dithering",
   "scripts": {
     "prepare": "husky",
     "build": "bash ./scripts/build-and-test.sh",
     "test": "bash ./scripts/build-and-test.sh",
+    "test:ios": "cd ./ios && swift test",
     "test:e2e": "bash ./scripts/build-and-test.sh --e2e-emulator",
-    "assets:playstore": "python3 ./scripts/generate-playstore-assets.py",
-    "lint": "python3 -m py_compile tests/emulator-e2e.test.py scripts/generate-playstore-assets.py && bash -n scripts/build-and-test.sh",
+    "assets:store": "python3 ./scripts/generate-store-assets.py",
+    "lint": "python3 -m py_compile tests/emulator-e2e.test.py scripts/generate-store-assets.py && bash -n scripts/build-and-test.sh",
     "deploy:device": "bash ./scripts/build-and-test.sh --install-device"
   },
   "devDependencies": {

@@ -1,4 +1,5 @@
 # Android & JVM Build Artifacts
+android/app/build/
 app/build/
 build/
 *.apk
@@ -8,13 +9,23 @@ build/
 *.dex
 *.class
 
-# Signing Keys & Credentials (Never commit private keystores)
+# iOS / SwiftPM / Xcode Build Artifacts
+ios/.build/
+ios/.swiftpm/
+ios/TapInk.xcodeproj/
+DerivedData/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Signing Keys & Credentials (Never commit private keystores or provisioning profiles)
 keys/*.jks
 keys/*.keystore
 keys/*.p12
 keys/*.pem
 *.jks
 *.keystore
+*.mobileprovision
 
 # Node / Husky
 node_modules/

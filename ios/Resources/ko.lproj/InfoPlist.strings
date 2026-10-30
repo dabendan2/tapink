@@ -1,0 +1,4 @@
+/* Localized Info.plist keys */
+"CFBundleDisplayName" = "TapInk 전자종이";
+"CFBundleName" = "TapInk 전자종이";
+"NFCReaderUsageDescription" = "무전원 전자종이에 전원을 공급하고 이미지를 전송하려면 iPhone 뒷면 최상단을 전자종이 중앙에 밀착해 주세요.";

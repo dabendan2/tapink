@@ -1,0 +1,72 @@
+name: TapInk
+options:
+  bundleIdPrefix: com.dabendan
+  deploymentTarget:
+    iOS: "16.0"
+  developmentLanguage: en
+  knownRegions:
+    - en
+    - ja
+    - de
+    - fr
+    - es
+    - ko
+    - zh-Hant
+    - zh-HK
+    - zh-Hans
+  xcodeVersion: "15.0"
+
+packages:
+  TapInkCore:
+    path: .
+
+settings:
+  base:
+    MARKETING_VERSION: "2.4.0"
+    CURRENT_PROJECT_VERSION: "7"
+    SWIFT_VERSION: "5.9"
+    IPHONEOS_DEPLOYMENT_TARGET: "16.0"
+    TARGETED_DEVICE_FAMILY: "1"
+
+targets:
+  TapInkApp:
+    type: application
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - path: TapInkApp
+        excludes:
+          - Info.plist
+          - TapInkApp.entitlements
+      - path: Resources
+    dependencies:
+      - package: TapInkCore
+        product: TapInkCore
+      - target: TapInkShareExtension
+        embed: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.dabendan.tapink
+        INFOPLIST_FILE: TapInkApp/Info.plist
+        CODE_SIGN_ENTITLEMENTS: TapInkApp/TapInkApp.entitlements
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ENABLE_PREVIEWS: YES
+
+  TapInkShareExtension:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - path: TapInkShareExtension
+        excludes:
+          - Info.plist
+          - TapInkShareExtension.entitlements
+    dependencies:
+      - package: TapInkCore
+        product: TapInkCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.dabendan.tapink.ShareExtension
+        INFOPLIST_FILE: TapInkShareExtension/Info.plist
+        CODE_SIGN_ENTITLEMENTS: TapInkShareExtension/TapInkShareExtension.entitlements
+        SKIP_INSTALL: YES

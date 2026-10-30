@@ -1,4 +1,4 @@
-name: Android CI & Play Store Bundle
+name: Cross-Platform CI (Android API 35 & iOS CoreNFC)
 
 on:
   push:
@@ -9,8 +9,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-test-bundle:
-    name: Build TapInk APK/AAB & Run JVM Unit Tests (API 35)
+  android-ci:
+    name: Build Android APK/AAB & Run JVM Unit Tests (API 35)
     runs-on: ubuntu-latest
 
     steps:
@@ -45,7 +45,7 @@ jobs:
       - name: Lint Shell & Python Scripts
         run: |
           bash -n scripts/build-and-test.sh
-          python3 -m py_compile tests/emulator-e2e.test.py scripts/generate-playstore-assets.py
+          python3 -m py_compile tests/emulator-e2e.test.py scripts/generate-store-assets.py
 
       - name: Decode Release Keystore (if configured in GitHub Secrets)
         if: ${{ secrets.RELEASE_KEYSTORE_BASE64 != '' }}
@@ -64,9 +64,9 @@ jobs:
         with:
           name: tapink-release-bundles
           path: |
-            app/build/tapink-release.aab
-            app/build/tapink-release.apk
-            app/build/tapink.apk
+            android/app/build/tapink-release.aab
+            android/app/build/tapink-release.apk
+            android/app/build/tapink.apk
           if-no-files-found: error
 
       - name: Publish GitHub Release on Version Tag
@@ -74,6 +74,56 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            app/build/tapink-release.aab
-            app/build/tapink-release.apk
+            android/app/build/tapink-release.aab
+            android/app/build/tapink-release.apk
           generate_release_notes: true
+
+  ios-core-linux-ci:
+    name: Run iOS TapInkCore Swift Unit Tests (Linux)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Swift
+        uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: "6.0"
+
+      - name: Build & Execute TapInkCore XCTest Suite
+        run: |
+          cd ios
+          swift test -v
+
+  ios-xcode-ci:
+    name: Build iOS App & Share Extension via XcodeGen (macOS)
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run TapInkCore Swift Package Tests on macOS
+        run: |
+          cd ios
+          swift test
+
+      - name: Install XcodeGen & Generate TapInk.xcodeproj
+        run: |
+          brew install xcodegen
+          cd ios
+          xcodegen generate
+
+      - name: Build TapInkApp & TapInkShareExtension for iOS Simulator (Unsigned)
+        run: |
+          cd ios
+          xcodebuild \
+            -project TapInk.xcodeproj \
+            -scheme TapInkApp \
+            -destination 'generic/platform=iOS Simulator' \
+            -configuration Release \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            build

@@ -1,0 +1,4 @@
+/* Localized Info.plist keys */
+"CFBundleDisplayName" = "TapInk NFC";
+"CFBundleName" = "TapInk NFC";
+"NFCReaderUsageDescription" = "Maintenez le haut du dos de votre iPhone contre l’écran E-Paper NFC pour l’alimenter et transférer l’image.";

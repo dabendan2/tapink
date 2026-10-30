@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-End-to-End (E2E) Android Emulator Verification & Screenshot Suite for EZ Sign Dynamic NFC Updater
+End-to-End (E2E) Android Emulator Verification & Screenshot Suite for TapInk Dynamic NFC Updater
 (Blank-Slate Google Pixel Material Design 3 Modal Bottom Sheet Consumer UX).
 """
 
@@ -18,7 +18,7 @@ ANDROID_SDK = "/home/ubuntu/android-sdk"
 EMULATOR_BIN = f"{ANDROID_SDK}/emulator/emulator"
 ADB_BIN = "/usr/bin/adb"
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-APK_PATH = os.path.join(PROJECT_DIR, "app", "build", "tapink.apk")
+APK_PATH = os.path.join(PROJECT_DIR, "android", "app", "build", "tapink.apk")
 SCREENSHOT_DIR = os.path.join(PROJECT_DIR, "docs", "screenshots")
 os.makedirs(SCREENSHOT_DIR, exist_ok=True)
 PACKAGE = "com.dabendan.tapink"
@@ -213,7 +213,7 @@ def wait_for_service_state(expected_state, timeout=15):
 
 def main():
     print("======================================================================")
-    print("  EZ SIGN DYNAMIC NFC UPDATER - BLANK-SLATE M3 BOTTOM SHEET E2E SUITE")
+    print("  TAPINK DYNAMIC NFC UPDATER - BLANK-SLATE M3 BOTTOM SHEET E2E SUITE")
     print("======================================================================")
 
     ensure_emulator_booted()
