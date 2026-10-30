@@ -3,7 +3,7 @@
   "version": "2.4.0",
   "private": true,
   "license": "MIT",
-  "description": "TapInk (瞬墨): Cross-Platform (Android & iOS) Instant NFC E-Paper & E-Ink Updater with Direct Share Sheet, Auto Hardware Detection & 4-Color Floyd-Steinberg Dithering",
+  "description": "TapInk (瞬墨): Effortless, 100% offline NFC E-Paper & smart badge updater for Android and iOS.",
   "scripts": {
     "prepare": "husky",
     "build": "bash ./scripts/build-and-test.sh",

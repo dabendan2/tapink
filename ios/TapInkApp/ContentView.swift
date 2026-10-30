@@ -209,12 +209,12 @@ public final class TapInkViewModel: NSObject, ObservableObject, NFCTagReaderSess
                         }
                         return ditherRes.packedHardwareBytes
                     },
-                    onProgress: { _, _, pct, rawMsg in
+                    onProgress: { _, _, pct, _ in
                         DispatchQueue.main.async {
                             if pct > self.progressPercent {
                                 self.progressPercent = pct
                             }
-                            session?.alertMessage = "\(pct)% — \(rawMsg)"
+                            session?.alertMessage = "\(pct)% — \(NSLocalizedString("ui_transferring_subtitle", comment: ""))"
                         }
                     }
                 )
@@ -224,7 +224,7 @@ public final class TapInkViewModel: NSObject, ObservableObject, NFCTagReaderSess
                     self.progressPercent = 100
                     self.uiState = .success
                     self.headline = NSLocalizedString("ui_success_headline", comment: "")
-                    self.subtitle = detectedCfg.modelSummary
+                    self.subtitle = self.formatHardwarePillLabel(detectedCfg)
                     session?.alertMessage = NSLocalizedString("ui_success_headline", comment: "")
                     session?.invalidate()
                     self.isTransferringLock = false

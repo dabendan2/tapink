@@ -13,19 +13,19 @@
 
 ## 2. 簡短說明 (Short Description，限 80 字元內)
 
-### 繁體中文版 (68 字元)
+### 繁體中文版 (72 字元)
 ```text
-從相簿或 Canva 按「分享」即刻刷入 NFC 電子紙！免手動選型號，支援黑白紅黃四色智慧抖動演算法，100% 純離線極速更新桌牌與名片。
+從相簿或 Canva 按「分享」即刻刷入無電池 NFC 電子紙！免選型號自動識別尺寸，四色底片級畫質渲染，100% 純離線極速更新桌牌與名片。
 ```
 
-### 英文版 (`en-US`, 78 字元)
+### 英文版 (`en-US`, 80 字元)
 ```text
-Update battery-free NFC E-Paper directly from Share! Auto-detect & pro dither.
+Update battery-free NFC E-Paper from Share! Auto-detect & crisp 4-color visuals.
 ```
 
 ### 日文版 (`ja-JP`, 68 字元)
 ```text
-写真やCanvaの「共有」からNFC電子ペーパーへ一発転送！型番の自動判別と高精細4色ディザリングに対応した完全オフライン書き換えツール
+写真やCanvaの「共有」からNFC電子ペーパーへ一発転送！型番の自動判別と高精細4色レンダリングに対応した完全オフライン書き換えツール
 ```
 
 ### 德文版 (`de-DE`, 76 字元)
@@ -35,7 +35,7 @@ Batterielose NFC-E-Paper direkt über „Teilen“ aktualisieren! 100 % offline.
 
 ### 韓文版 (`ko-KR`, 64 字元)
 ```text
-갤러리나 Canva에서 '공유' 한 번으로 무전원 NFC 전자종이 즉시 전송! 모델 자동 인식 및 4색 디더링 지원
+갤러리나 Canva에서 '공유' 한 번으로 무전원 NFC 전자종이 즉시 전송! 모델 자동 인식 및 4색 고화질 지원
 ```
 
 ---
@@ -45,7 +45,7 @@ Batterielose NFC-E-Paper direkt über „Teilen“ aktualisieren! 100 % offline.
 ```text
 別讓難用的原廠 App，封印了你手上的無電池 NFC 電子紙！
 
-無源 NFC 電子紙（E-Paper / E-Ink 智慧桌牌、電子名片、行李牌、Santek EZ Sign 相容顯示卡）擁有免充電、永久顯示的極致魅力。但每次想換一張圖，你是否都得忍受老舊難用的官方軟體：先打開 App、在一堆未知型號裡手動猜測尺寸、忍受失真的粗糙畫質，還常常在最新 Android 手機上感應失敗？
+無電池 NFC 電子紙（E-Paper / E-Ink 智慧桌牌、電子名片、行李牌、Santek EZ Sign 相容顯示卡）擁有免充電、永久顯示的極致魅力。但每次想換一張圖，你是否都得忍受老舊難用的官方軟體：先打開 App、在一堆未知型號裡手動猜測尺寸、忍受失真的粗糙畫質，還常常在最新 Android 手機上感應失敗？
 
 TapInk 瞬墨 徹底重構了 NFC 電子紙的更新體驗——把繁瑣的 6 個步驟，濃縮成「按分享 ➔ 貼上去」的 3 秒直覺反射。
 
@@ -54,21 +54,21 @@ TapInk 瞬墨 徹底重構了 NFC 電子紙的更新體驗——把繁瑣的 6 �
 2. 點選系統「分享」：直接按下 Android 系統分享選單中的「刷入電子紙 (TapInk)」，畫面底部立即滑出輕量感應面板，完全不必中斷手邊工作。
 3. 一觸即傳，自動關閉：將手機背面 NFC 感應區貼靠電子紙，數秒內完成供電與畫面刷新，成功後自動收起面板，乾淨俐落！
 
-🌟 核心技術亮點
-• 全自動硬體識別（免手動設定型號）
-  手機貼靠瞬間，TapInk 會自動讀取電子紙晶片握手訊號，精準識別螢幕尺寸（2.13" / 2.9" / 4.2" 等）與色彩模式（黑白雙色 BW、黑白紅三色 BWR、黑白紅黃四色 BWRY），自動完成最佳裁切與解析度匹配。
-• 專業級電子紙影像演算法（Floyd-Steinberg Dithering）
-  一般照片直接轉成四色往往慘不忍睹。TapInk 內建針對電子墨水反射特性調校的「誤差擴散抖動演算法（Error-Diffusion Dithering）」：透過細膩的紅、黃、黑、白微米點陣交織，還原柔和漸層與立體光影，同時保留文字與 QR Code 清晰邊緣。
-• 針對最新 Android 系統深度優化的 NFC 通訊引擎
-  重寫底層 NFC 資料封包傳輸與供電穩定度控制，並免疫系統 Quick Share 搶佔干擾，解決新款 Android 機型頻繁斷線或刷出殘影的痛點。
+🌟 核心產品亮點
+• 免設定全自動硬體識別
+  手機貼靠瞬間，TapInk 會自動識別電子紙的螢幕尺寸（1.54" / 2.13" / 2.9" / 4.2" 等）與色彩模式（黑白雙色、黑白紅三色、黑白紅黃四色），自動完成最佳裁切與解析度匹配。
+• 博物館級電子墨水色彩渲染
+  一般照片直接轉成四色往往嚴重失真。TapInk 內建針對電子墨水反射特性調校的色彩渲染引擎：透過細膩的黑、白、紅、黃微米點陣交織，自然還原人像膚色與立體光影漸層，同時保留文字與 QR Code 清晰邊緣。
+• 針對最新 Android 系統深度優化的感應引擎
+  重寫底層 NFC 無線供電與傳輸穩定度控制，有效排除系統背景感應干擾，解決新款 Android 手機頻繁斷線或刷出殘影的痛點。
 
 🔒 極致隱私與純淨承諾
-• 100% 純離線運作：本應用程式不申請任何網路權限（Zero Internet Permission）。
-• 零資料外流：私人照片、公司名片、會議桌牌與 QR Code 全部在手機本地端記憶體內即時運算並直傳電子紙，絕不上傳雲端。
+• 100% 純離線運作：本應用程式不申請任何網路權限。
+• 零資料外流：私人照片、公司名片、會議桌牌與 QR Code 全部在手機本地端記憶體內即時處理並直傳電子紙，絕不上傳雲端。
 • 零廣告、零追蹤、零背景常駐：用完即走，不耗電、不打擾。
 
 📱 相容硬體規格與聲明
-TapInk 支援市面上主流採用無源 NFC 供電通訊協定之電子紙顯示器（Passive NFC E-Paper / E-Ink Tags），包含但不限於：
+TapInk 支援市面上主流採用無源 NFC 供電之電子紙顯示器（Passive NFC E-Paper / E-Ink Tags），包含但不限於：
 • Santek EZ Sign 系列相容之 2.9 吋（黑白雙色）、4.2 吋（黑白紅黃四色）無電池電子紙顯示牌 / 智慧桌牌 / 識別證卡。
 • 相容架構之通用型無源 NFC 電子紙標籤、電子智慧名片、電子貨架標籤（ESL）與資訊展示牌（支援雙色、三色、四色規格）。
 
@@ -92,13 +92,13 @@ TapInk reimagines how you update NFC E-Ink displays. We turned a frustrating 6-s
 2. Tap System "Share": Select "Beam to E-Paper (TapInk)" right from your Android Share Sheet. A sleek, lightweight NFC bottom sheet slides up instantly—no need to leave your current app.
 3. Tap & Auto-Dismiss: Hold your phone's NFC antenna against the E-Paper display for a few seconds. TapInk powers the screen, transfers the image, and closes itself automatically when finished!
 
-🌟 Key Technical Highlights
+🌟 Why Choose TapInk?
 • Zero-Setup Auto Hardware Detection
-  Forget selecting model numbers from a confusing list. The moment your phone touches the tag, TapInk automatically identifies the screen resolution (2.13", 2.9", 4.2", etc.) and color palette (2-Color BW, 3-Color BWR, or 4-Color Black/White/Red/Yellow), matching aspect ratios on the fly.
-• Studio-Grade E-Paper Dithering (Floyd-Steinberg Engine)
-  Standard color conversion ruins photos on limited-palette E-Ink screens. TapInk features a custom-tuned error-diffusion dithering pipeline built specifically for reflective E-Paper pigments—blending Black, White, Red, and Yellow micro-dots to create natural skin tones, smooth gradients, and crisp typography.
+  Forget selecting model numbers from a confusing list. The moment your phone touches the tag, TapInk automatically identifies the screen resolution (1.54", 2.13", 2.9", 4.2", etc.) and color palette (2-Color BW, 3-Color BWR, or 4-Color Black/White/Red/Yellow), matching aspect ratios on the fly.
+• Studio-Grade E-Ink Color Rendering
+  Standard color conversion ruins photos on limited-palette E-Ink screens. TapInk features a custom-tuned color rendering engine built specifically for reflective E-Paper pigments—blending Black, White, Red, and Yellow micro-dots to create natural skin tones, smooth gradients, and crisp typography.
 • Rock-Solid NFC Engine for Modern Android
-  Engineered from the ground up for the latest Android OS versions, ensuring stable power harvesting and reliable packet transmission without freezing at 99%.
+  Engineered from the ground up for the latest Android OS versions, ensuring stable power harvesting and reliable image transmission without freezing at 99%.
 
 🔒 100% Offline & Privacy-First by Design
 • Zero Internet Permission: TapInk does not even request network access.
@@ -130,13 +130,13 @@ TapInk（タップインク）は、NFC電子ペーパーの書き換え体験�
 2. システムの「共有」をタップ：共有メニューから「電子ペーパーへ転送 (TapInk)」を選択すると、画面下部にシンプルなスキャンシートが即座に立ち上がります。
 3. かざすだけで自動完了：スマホ背面のNFCアンテナを電子ペーパーにかざすだけ。数秒で給電と書き換えが完了し、自動的に元の画面へ戻ります。
 
-🌟 主な技術特長
+🌟 主な特長
 • 型番の完全自動判別（設定不要）
-  かざした瞬間に電子ペーパーのチップ情報を読み取り、画面サイズ（2.13" / 2.9" / 4.2" 等）とカラーモード（白黒2色 / 白黒赤3色 / 白黒赤黄4色）を自動認識して最適化します。
-• 高精細4色ディザリングエンジン（Floyd-Steinberg方式）
-  電子ペーパーの反射特性に合わせてチューニングされた誤差拡散ディザリングを搭載。写真やグラデーションを自然な4色ドットで表現し、文字やQRコードはくっきり鮮明に保ちます。
+  かざした瞬間に電子ペーパーの画面サイズ（1.54" / 2.13" / 2.9" / 4.2" 等）とカラーモード（白黒2色 / 白黒赤3色 / 白黒赤黄4色）を自動認識して最適化します。
+• 高精細4色カラーレンダリング
+  電子ペーパーの反射特性に合わせてチューニングされた色変換エンジンを搭載。写真やグラデーションを自然な4色ドットで表現し、文字やQRコードはくっきり鮮明に保ちます。
 • 最新Android OSに最適化された安定通信
-  システム共有シート終了時のNFC競合を自動回避し、書き込み途中の通信切断やフリーズを防ぎます。
+  バックグラウンドのNFC競合を自動回避し、書き込み途中の通信切断やフリーズを防ぎます。
 
 🔒 100%オフライン・プライバシー保護
 • インターネット権限ゼロ（完全ローカル処理）：大切な写真や社用名刺データが外部サーバーに送信されることは一切ありません。広告・トラッキングもゼロです。
@@ -145,4 +145,3 @@ TapInk（タップインク）は、NFC電子ペーパーの書き換え体験�
 • Santek EZ Signシリーズ互換の2.9インチ（2色）・4.2インチ（4色）電池レスNFC電子ペーパーおよび汎用パッシブNFC電子ペーパーに対応。
 ※TapInkは独立して開発されたサードパーティ製ツールであり、San Technology社（Santek / EZ Sign）および各ハードウェアメーカーとは提携・承認関係にありません。記載されている製品名は互換性を示す目的でのみ使用されています。
 ```
-
