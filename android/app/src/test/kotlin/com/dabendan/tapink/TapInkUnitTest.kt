@@ -263,6 +263,125 @@ object TapInkUnitTest {
         assertEquals(30000, sim.reconstructDecompressedBuffer().size, "Must write exact 30,000 bytes (15 LZO blocks)")
     }
 
+    private fun testExhaustiveFmsHardwareMatrixAndUncompressedFallback() {
+        val matrix = listOf(
+            Triple(byteArrayOf(0xA0.toByte(), 0x07, 0x00, 0x10, 0x20, 0x01, 0x90.toByte(), 0x00, 0xC8.toByte(), 0x90.toByte(), 0x00), Pair(200, 200), FloydSteinbergDitherer.ColorMode.BWRY_4COLOR),
+            Triple(byteArrayOf(0xA0.toByte(), 0x07, 0x00, 0x10, 0x20, 0x01, 0x00, 0x01, 0x28, 0x90.toByte(), 0x00), Pair(296, 128), FloydSteinbergDitherer.ColorMode.BWRY_4COLOR),
+            Triple(byteArrayOf(0xA0.toByte(), 0x07, 0x00, 0x10, 0x20, 0x01, 0x50, 0x01, 0x80.toByte(), 0x90.toByte(), 0x00), Pair(384, 168), FloydSteinbergDitherer.ColorMode.BWRY_4COLOR),
+            Triple(byteArrayOf(0xA0.toByte(), 0x07, 0x00, 0x10, 0x20, 0x01, 0x50, 0x01, 0x90.toByte(), 0x90.toByte(), 0x00), Pair(400, 168), FloydSteinbergDitherer.ColorMode.BWRY_4COLOR),
+            Triple(byteArrayOf(0xA0.toByte(), 0x07, 0x00, 0x10, 0x20, 0x00, 0xF4.toByte(), 0x00, 0xFA.toByte(), 0x90.toByte(), 0x00), Pair(250, 122), FloydSteinbergDitherer.ColorMode.BWRY_4COLOR),
+            Triple(byteArrayOf(0xA0.toByte(), 0x07, 0x00, 0x10, 0x20, 0x01, 0x30, 0x01, 0x28, 0x90.toByte(), 0x00), Pair(296, 152), FloydSteinbergDitherer.ColorMode.BWRY_4COLOR),
+            Triple(byteArrayOf(0xA0.toByte(), 0x07, 0x00, 0x10, 0x20, 0x01, 0x70, 0x01, 0x68, 0x90.toByte(), 0x00), Pair(360, 184), FloydSteinbergDitherer.ColorMode.BWRY_4COLOR),
+            Triple(byteArrayOf(0xA0.toByte(), 0x07, 0x00, 0x10, 0x20, 0x01, 0xE0.toByte(), 0x01, 0xA0.toByte(), 0x90.toByte(), 0x00), Pair(416, 240), FloydSteinbergDitherer.ColorMode.BWRY_4COLOR),
+            Triple(byteArrayOf(0xA0.toByte(), 0x07, 0x00, 0x80.toByte(), 0x60, 0x01, 0x90.toByte(), 0x02, 0x58, 0xD1.toByte(), 0x01, 0x00, 0xE0.toByte(), 0x01, 0x01, 0x90.toByte(), 0x00), Pair(600, 400), FloydSteinbergDitherer.ColorMode.SPECTRA_6COLOR),
+            Triple(byteArrayOf(0xA0.toByte(), 0x07, 0x00, 0x80.toByte(), 0x30, 0x00, 0x80.toByte(), 0x01, 0x28, 0x90.toByte(), 0x00), Pair(296, 128), FloydSteinbergDitherer.ColorMode.BWR_3COLOR)
+        )
+        for ((tlv, dims, expMode) in matrix) {
+            val parsed = TapInkProtocol.parseHardwareConfig(tlv)
+            assertEquals(dims.first, parsed.normWidth, "Width mismatch for ${parsed.modelSummary}")
+            assertEquals(dims.second, parsed.normHeight, "Height mismatch for ${parsed.modelSummary}")
+            assertEquals(expMode, parsed.colorMode, "ColorMode mismatch for ${parsed.modelSummary}")
+        }
+
+        val semiAlphaPixels = IntArray(200 * 200) { 0x80FF0000.toInt() }
+        val bwrRes = FloydSteinbergDitherer.ditherAndPackPixels(
+            width = 200,
+            height = 200,
+            argbPixels = semiAlphaPixels,
+            colorMode = FloydSteinbergDitherer.ColorMode.BWR_3COLOR,
+            hwWidth = 200,
+            hwHeight = 200
+        )
+        assertEquals(10000, bwrRes.packedHardwareBytes.size, "200x200 BWR size must be 10,000 bytes")
+
+        val spectraRes = FloydSteinbergDitherer.ditherAndPackPixels(
+            width = 200,
+            height = 200,
+            argbPixels = IntArray(200 * 200) { 0xFF00FF00.toInt() },
+            colorMode = FloydSteinbergDitherer.ColorMode.SPECTRA_6COLOR,
+            hwWidth = 200,
+            hwHeight = 200
+        )
+        assertEquals(10000, spectraRes.packedHardwareBytes.size, "200x200 Spectra6 size must be 10,000 bytes")
+
+        var f0d2Count = 0
+        val uncompMock = object : IsoDepTransceiver {
+            private var conn = false
+            override fun connect(timeoutMs: Int) { conn = true }
+            override fun isConnected(): Boolean = conn
+            override fun close() { conn = false }
+            override fun transceive(command: ByteArray): ByteArray {
+                val c0 = command[0].toInt() and 0xFF
+                val c1 = command[1].toInt() and 0xFF
+                if (c0 == 0x00 && c1 == 0xD1) {
+                    return byteArrayOf(0xA0.toByte(), 0x07, 0x00, 0x80.toByte(), 0x20, 0x00, 0xC8.toByte(), 0x00, 0xC8.toByte(), 0xD1.toByte(), 0x01, 0x00, 0x90.toByte(), 0x00)
+                }
+                if (c0 == 0xF0 && c1 == 0xD2) {
+                    f0d2Count++
+                    return byteArrayOf(0x90.toByte(), 0x00)
+                }
+                if (c0 == 0xF0 && c1 == 0xDE) {
+                    return byteArrayOf(0x00, 0x90.toByte(), 0x00)
+                }
+                return byteArrayOf(0x90.toByte(), 0x00)
+            }
+        }
+        val uncompCfg = TapInkProtocol.executeDynamicUpdate(
+            transceiver = uncompMock,
+            refreshInitialWaitMs = 0L,
+            refreshPollIntervalMs = 0L,
+            imageProvider = { ByteArray(10000) { 0x55 } }
+        ) { _, _, _, _ -> }
+        assertTrue(!uncompCfg.compressionSupported, "Expected compressionSupported=false")
+        assertEquals(40, f0d2Count, "10,000B / 250B = 40 F0D2 packets")
+    }
+
+    private fun testProtocolAndLzoCorruptInputGuardrails() {
+        val pinFailSim = SimulatedIsoDepTransceiver(mode = SimulatedIsoDepTransceiver.MODE_PIN_FAIL)
+        var pinCaught = false
+        try {
+            TapInkProtocol.executeDynamicUpdate(
+                transceiver = pinFailSim,
+                refreshInitialWaitMs = 0L,
+                refreshPollIntervalMs = 0L,
+                imageProvider = { ByteArray(30000) }
+            ) { _, _, _, _ -> }
+        } catch (_: TapInkProtocolException) {
+            pinCaught = true
+        }
+        assertTrue(pinCaught, "Expected TapInkProtocolException on PIN fail")
+
+        val refDiscSim = SimulatedIsoDepTransceiver(mode = SimulatedIsoDepTransceiver.MODE_REFRESH_DISCONNECT)
+        var refCaught = false
+        try {
+            TapInkProtocol.executeDynamicUpdate(
+                transceiver = refDiscSim,
+                refreshInitialWaitMs = 0L,
+                refreshPollIntervalMs = 0L,
+                imageProvider = { ByteArray(30000) }
+            ) { _, _, _, _ -> }
+        } catch (_: TapInkProtocolException) {
+            refCaught = true
+        }
+        assertTrue(refCaught, "Expected TapInkProtocolException on refresh disconnect")
+
+        for (badTlv in listOf(
+            byteArrayOf(0x90.toByte(), 0x00),
+            byteArrayOf(0xA0.toByte()),
+            byteArrayOf(0xA0.toByte(), 0x10, 0x00, 0x90.toByte(), 0x00),
+            byteArrayOf(0xA0.toByte(), 0x03, 0x00, 0x00, 0x00, 0x90.toByte(), 0x00),
+            byteArrayOf(0xC1.toByte(), 0x02, 0x12, 0x34, 0x90.toByte(), 0x00)
+        )) {
+            var tlvCaught = false
+            try {
+                TapInkProtocol.parseHardwareConfig(badTlv)
+            } catch (_: TapInkProtocolException) {
+                tlvCaught = true
+            }
+            assertTrue(tlvCaught, "Expected corrupt TLV to throw")
+        }
+    }
+
     @JvmStatic
     fun main(args: Array<String>) {
         LogManager.androidLogEnabled = false
@@ -277,6 +396,8 @@ object TapInkUnitTest {
         runTest("5. Fail-Fast on Corrupt/Unsupported Hardware Color Code (0xFF)") { testProtocolFailFastOnUnsupportedColorCode() }
         runTest("6. Fail-Fast on Mid-Write Tag Lost (RF Disconnect)") { testProtocolFailFastOnMidWriteTagLost() }
         runTest("7. FMSH COS v1 Doubled-Height 4.2\" 4-Color BWRY (600x400, 0x20 -> 400x300 BWRY)") { testFmsCosV1DoubledHeight420BWRYDetection() }
+        runTest("8. Exhaustive FMSH Hardware Matrix (9 Specs), 3/6-Color & F0D2 Uncompressed Fallback") { testExhaustiveFmsHardwareMatrixAndUncompressedFallback() }
+        runTest("9. Protocol & LZO1X Corrupt Input / Error Guardrails (PIN Fail, Refresh Disconnect, Bad TLV)") { testProtocolAndLzoCorruptInputGuardrails() }
 
         println("------------------------------------------------------------")
         println("  Result: $passed passed, $failed failed")

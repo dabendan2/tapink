@@ -256,4 +256,131 @@ final class TapInkCoreTests: XCTestCase {
         let reconstructed = try sim.reconstructDecompressedBuffer()
         XCTAssertEqual(30000, reconstructed.count, "Must write exact 30,000 bytes (15 LZO blocks)")
     }
+
+    // 8. Exhaustive FMSH COS v1/v2 Resolution Table, 3-Color/6-Color Modes & Uncompressed F0D2 Fallback
+    func testExhaustiveFmsHardwareMatrixAndUncompressedFallback() throws {
+        // Test all COS v1 doubled-height resolution mappings & model summaries
+        let matrix: [([UInt8], Int, Int, FloydSteinbergDitherer.ColorMode, String)] = [
+            // 1.54" 200x200 BWRY (raw 400x200, 0x20)
+            ([0xA0, 0x07, 0x00, 0x10, 0x20, 0x01, 0x90, 0x00, 0xC8, 0x90, 0x00], 200, 200, .bwry4Color, "1.54吋"),
+            // 2.9" 296x128 BWRY (raw 256x296, 0x20)
+            ([0xA0, 0x07, 0x00, 0x10, 0x20, 0x01, 0x00, 0x01, 0x28, 0x90, 0x00], 296, 128, .bwry4Color, "2.9吋"),
+            // 2.9" HD 384x168 BWRY (raw 336x384, 0x20)
+            ([0xA0, 0x07, 0x00, 0x10, 0x20, 0x01, 0x50, 0x01, 0x80, 0x90, 0x00], 384, 168, .bwry4Color, "384x168"),
+            // 3.0" 400x168 BWRY (raw 336x400, 0x20)
+            ([0xA0, 0x07, 0x00, 0x10, 0x20, 0x01, 0x50, 0x01, 0x90, 0x90, 0x00], 400, 168, .bwry4Color, "400x168"),
+            // 2.13" 250x122 BWRY (raw 244x250, 0x20)
+            ([0xA0, 0x07, 0x00, 0x10, 0x20, 0x00, 0xF4, 0x00, 0xFA, 0x90, 0x00], 250, 122, .bwry4Color, "2.13吋"),
+            // 2.66" 296x152 BWRY (raw 304x296, 0x20)
+            ([0xA0, 0x07, 0x00, 0x10, 0x20, 0x01, 0x30, 0x01, 0x28, 0x90, 0x00], 296, 152, .bwry4Color, "296x152"),
+            // 2.66" HD 360x184 BWRY (raw 368x360, 0x20)
+            ([0xA0, 0x07, 0x00, 0x10, 0x20, 0x01, 0x70, 0x01, 0x68, 0x90, 0x00], 360, 184, .bwry4Color, "360x184"),
+            // 3.7" 416x240 BWRY (raw 480x416, 0x20)
+            ([0xA0, 0x07, 0x00, 0x10, 0x20, 0x01, 0xE0, 0x01, 0xA0, 0x90, 0x00], 416, 240, .bwry4Color, "3.7吋"),
+            // 3.6" 600x400 Spectra 6-Color (0x60) + D1=0x00 (uncompressed) + E0 tag
+            ([0xA0, 0x07, 0x00, 0x80, 0x60, 0x01, 0x90, 0x02, 0x58, 0xD1, 0x01, 0x00, 0xE0, 0x01, 0x01, 0x90, 0x00], 600, 400, .spectra6Color, "3.6吋"),
+            // 2.9" 296x128 3-Color BWR (0x30)
+            ([0xA0, 0x07, 0x00, 0x80, 0x30, 0x00, 0x80, 0x01, 0x28, 0x90, 0x00], 296, 128, .bwr3Color, "2.9吋"),
+        ]
+
+        for (tlv, expW, expH, expMode, expInch) in matrix {
+            let parsed = try TapInkProtocol.parseHardwareConfig(tlv)
+            XCTAssertEqual(expW, parsed.normWidth)
+            XCTAssertEqual(expH, parsed.normHeight)
+            XCTAssertEqual(expMode, parsed.colorMode)
+            XCTAssertTrue(parsed.modelSummary.contains(expInch), "Summary \(parsed.modelSummary) should contain \(expInch)")
+            XCTAssertTrue(expMode.code > 0 && !expMode.paletteRgb.isEmpty && !expMode.paletteArgb.isEmpty)
+        }
+
+        // Verify 3-color & 6-color dithering + semi-transparent alpha blending
+        let semiAlphaPixels = [UInt32](repeating: 0x80FF0000, count: 200 * 200)
+        let bwrRes = FloydSteinbergDitherer.ditherAndPackPixels(
+            width: 200,
+            height: 200,
+            argbPixels: semiAlphaPixels,
+            colorMode: .bwr3Color,
+            hwWidth: 200,
+            hwHeight: 200
+        )
+        XCTAssertEqual(10000, bwrRes.packedHardwareBytes.count)
+
+        let spectraRes = FloydSteinbergDitherer.ditherAndPackPixels(
+            width: 200,
+            height: 200,
+            argbPixels: [UInt32](repeating: 0xFF00FF00, count: 200 * 200),
+            colorMode: .spectra6Color,
+            hwWidth: 200,
+            hwHeight: 200
+        )
+        XCTAssertEqual(10000, spectraRes.packedHardwareBytes.count)
+
+        // Verify Uncompressed F0D2 transfer path (when D1 compression flag is 0x00)
+        final class UncompressedMockTransceiver: IsoDepTransceiver {
+            var connected = false
+            var f0d2Count = 0
+            func connect(timeoutMs: Int) throws { connected = true }
+            func isConnected() -> Bool { return connected }
+            func close() { connected = false }
+            func transceive(command: [UInt8]) throws -> [UInt8] {
+                if command[0] == 0x00 && command[1] == 0xD1 {
+                    // 200x200 BW (5000 bytes), compression D1=0x00 (false)
+                    return [0xA0, 0x07, 0x00, 0x80, 0x20, 0x00, 0xC8, 0x00, 0xC8, 0xD1, 0x01, 0x00, 0x90, 0x00]
+                }
+                if command[0] == 0xF0 && command[1] == 0xD2 {
+                    f0d2Count += 1
+                    return [0x90, 0x00]
+                }
+                if command[0] == 0xF0 && command[1] == 0xDE {
+                    return [0x00, 0x90, 0x00]
+                }
+                return [0x90, 0x00]
+            }
+        }
+        let uncompMock = UncompressedMockTransceiver()
+        let uncompCfg = try TapInkProtocol.executeDynamicUpdate(
+            transceiver: uncompMock,
+            refreshInitialWaitMs: 0,
+            refreshPollIntervalMs: 0,
+            imageProvider: { _ in [UInt8](repeating: 0x55, count: 10000) },
+            onProgress: { _, _, _, _ in }
+        )
+        XCTAssertFalse(uncompCfg.compressionSupported)
+        XCTAssertEqual(40, uncompMock.f0d2Count, "10,000B / 250B = 40 F0D2 packets")
+    }
+
+    // 9. Protocol & LZO1X Corrupt Input / Error Guardrails
+    func testProtocolAndLzoCorruptInputGuardrails() {
+        // PIN Fail (6982)
+        let pinFailSim = SimulatedIsoDepTransceiver(mode: SimulatedIsoDepTransceiver.modePinFail)
+        XCTAssertThrowsError(try TapInkProtocol.executeDynamicUpdate(
+            transceiver: pinFailSim,
+            refreshInitialWaitMs: 0,
+            refreshPollIntervalMs: 0,
+            imageProvider: { _ in [UInt8](repeating: 0, count: 30000) },
+            onProgress: { _, _, _, _ in }
+        ))
+
+        // Refresh Disconnect
+        let refDiscSim = SimulatedIsoDepTransceiver(mode: SimulatedIsoDepTransceiver.modeRefreshDisconnect)
+        XCTAssertThrowsError(try TapInkProtocol.executeDynamicUpdate(
+            transceiver: refDiscSim,
+            refreshInitialWaitMs: 0,
+            refreshPollIntervalMs: 0,
+            imageProvider: { _ in [UInt8](repeating: 0, count: 30000) },
+            onProgress: { _, _, _, _ in }
+        ))
+
+        // Corrupt TLV inputs
+        XCTAssertThrowsError(try TapInkProtocol.parseHardwareConfig([0x90, 0x00]))
+        XCTAssertThrowsError(try TapInkProtocol.parseHardwareConfig([0xA0]))
+        XCTAssertThrowsError(try TapInkProtocol.parseHardwareConfig([0xA0, 0x10, 0x00, 0x90, 0x00]))
+        XCTAssertThrowsError(try TapInkProtocol.parseHardwareConfig([0xA0, 0x03, 0x00, 0x00, 0x00, 0x90, 0x00]))
+        XCTAssertThrowsError(try TapInkProtocol.parseHardwareConfig([0xC1, 0x02, 0x12, 0x34, 0x90, 0x00]))
+
+        // Corrupt LZO1X inputs
+        XCTAssertThrowsError(try Lzo1x.decompress([0x00]))
+        XCTAssertThrowsError(try Lzo1x.decompress([0x11, 0x00, 0x00, 0xFF]))
+        let validComp = Lzo1x.compress([UInt8](repeating: 0xAA, count: 64))
+        XCTAssertThrowsError(try Lzo1x.decompress(validComp, expectedOutputLength: 32))
+    }
 }
