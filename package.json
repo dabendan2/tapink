@@ -1,0 +1,19 @@
+{
+  "name": "ezsign-nfc-updater",
+  "version": "2.3.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Android NFC E-Paper Updater for Santek EZ Sign (2.9\" BW & 4.2\" BWRY) with Material 3 Share Sheet & Floyd-Steinberg Dithering",
+  "scripts": {
+    "prepare": "husky",
+    "build": "bash ./scripts/build-and-test.sh",
+    "test": "bash ./scripts/build-and-test.sh",
+    "test:e2e": "bash ./scripts/build-and-test.sh --e2e-emulator",
+    "assets:playstore": "python3 ./scripts/generate-playstore-assets.py",
+    "lint": "python3 -m py_compile tests/emulator-e2e.test.py scripts/generate-playstore-assets.py && bash -n scripts/build-and-test.sh",
+    "deploy:device": "bash ./scripts/build-and-test.sh --install-device"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7"
+  }
+}

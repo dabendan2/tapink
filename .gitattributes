@@ -1,0 +1,11 @@
+# Normalize line endings to LF across platforms
+* text=auto eol=lf
+
+# Binary assets
+*.png binary
+*.jpg binary
+*.webp binary
+*.aab binary
+*.apk binary
+*.jks binary
+*.keystore binary

@@ -1,0 +1,33 @@
+# Android & JVM Build Artifacts
+app/build/
+build/
+*.apk
+*.aab
+*.apks
+*.idsig
+*.dex
+*.class
+
+# Signing Keys & Credentials (Never commit private keystores)
+keys/*.jks
+keys/*.keystore
+keys/*.p12
+keys/*.pem
+*.jks
+*.keystore
+
+# Node / Husky
+node_modules/
+npm-debug.log*
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+.idea/
+*.iml
+.vscode/

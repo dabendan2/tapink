@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+set -e
+
+echo "=== [Husky pre-commit] 1. Secret & Keystore Leak Guard ==="
+STAGED_SECRETS=$(git diff --cached --name-only | grep -E '\.(jks|keystore|p12|pem)$' || true)
+if [ -n "$STAGED_SECRETS" ]; then
+    echo "[ERROR] Refusing to commit private keystore/certificate files:"
+    echo "$STAGED_SECRETS"
+    exit 1
+fi
+
+echo "=== [Husky pre-commit] 2. Script & Python Syntax Lint ==="
+bash -n ./scripts/build-and-test.sh
+python3 -m py_compile ./tests/emulator-e2e.test.py ./scripts/generate-playstore-assets.py
+
+echo "=== [Husky pre-commit] 3. Kotlin -Werror Build, JVM Unit Tests & AAB Validation ==="
+./scripts/build-and-test.sh

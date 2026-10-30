@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Background Circle/Squircle -->
+    <path
+        android:fillColor="#191C20"
+        android:pathData="M0,0h108v108h-108z" />
+    <!-- Outer NFC Ripple Ring -->
+    <path
+        android:strokeColor="#3E4759"
+        android:strokeWidth="3"
+        android:pathData="M54,16 A38,38 0 1,1 53.9,16 Z" />
+    <!-- E-Paper Bezel Frame -->
+    <path
+        android:fillColor="#F2F4F8"
+        android:pathData="M33,24 h42 a6,6 0 0,1 6,6 v48 a6,6 0 0,1 -6,6 h-42 a6,6 0 0,1 -6,-6 v-48 a6,6 0 0,1 6,-6 z" />
+    <!-- Inner E-Ink Screen -->
+    <path
+        android:fillColor="#22252C"
+        android:pathData="M37,30 h34 v38 h-34 z" />
+    <!-- Mountain / Sun Graphic on Screen (4-Color BWRY accent) -->
+    <path
+        android:fillColor="#FFD600"
+        android:pathData="M61,36 a6,6 0 1,0 0.1,0 z" />
+    <path
+        android:fillColor="#E53935"
+        android:pathData="M37,68 L49,48 L60,62 L65,55 L71,68 Z" />
+    <!-- Primary Blue NFC Badge -->
+    <path
+        android:fillColor="#A8C7FA"
+        android:pathData="M46,74 h16 v4 h-16 z" />
+</vector>
