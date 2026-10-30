@@ -780,8 +780,9 @@ class ShareNfcActivity : Activity() {
         }
 
         var uri: Uri? = @Suppress("DEPRECATION") incomingIntent.getParcelableExtra(Intent.EXTRA_STREAM)
-        if (uri == null && incomingIntent.clipData != null && incomingIntent.clipData!!.itemCount > 0) {
-            uri = incomingIntent.clipData!!.getItemAt(0).uri
+        val clip = incomingIntent.clipData
+        if (uri == null && clip != null && clip.itemCount > 0) {
+            uri = clip.getItemAt(0).uri
         }
         if (uri == null) {
             uri = incomingIntent.data

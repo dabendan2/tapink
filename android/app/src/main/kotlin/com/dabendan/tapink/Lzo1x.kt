@@ -155,7 +155,7 @@ object Lzo1x {
         val inEnd = input.size
         if (inEnd < 3) throw IllegalArgumentException("lzo1x: unexpected end of input")
         val presized = expectedOutputLength != null
-        var out = if (presized) ByteArray(expectedOutputLength!!) else ByteArray(maxOf(64, input.size * 2))
+        var out = if (expectedOutputLength != null) ByteArray(expectedOutputLength) else ByteArray(maxOf(64, input.size * 2))
         var op = 0
 
         fun ensure(need: Int) {
