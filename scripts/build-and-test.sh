@@ -57,40 +57,44 @@ fi
 
 echo "=== [1/6] Cleaning & Preparing Build Directories ==="
 rm -rf "$BUILD_DIR"
-mkdir -p "$BUILD_DIR/classes" "$BUILD_DIR/test-classes" "$BUILD_DIR/dex" "$BUILD_DIR/bundle-proto" "$BUILD_DIR/base-module"
+mkdir -p "$BUILD_DIR/classes" "$BUILD_DIR/test-classes" "$BUILD_DIR/dex" "$BUILD_DIR/gen" "$BUILD_DIR/bundle-proto" "$BUILD_DIR/base-module"
 
 CLASSPATH="$ANDROID_JAR:$KOTLIN_STDLIB"
 
-echo "=== [2/6] Compiling App Kotlin Sources (API 35, -Werror) ==="
-"$KOTLINC" -Werror -cp "$CLASSPATH" \
-    -d "$BUILD_DIR/classes" \
-    "$SRC_DIR/com/dabendan/ezsign/LogManager.kt" \
-    "$SRC_DIR/com/dabendan/ezsign/EzSignLogService.kt" \
-    "$SRC_DIR/com/dabendan/ezsign/Lzo1x.kt" \
-    "$SRC_DIR/com/dabendan/ezsign/FloydSteinbergDitherer.kt" \
-    "$SRC_DIR/com/dabendan/ezsign/EzSignProtocol.kt" \
-    "$SRC_DIR/com/dabendan/ezsign/ShareNfcActivity.kt"
-
-echo "=== [3/6] Compiling & Executing JVM Unit Tests (-Werror) ==="
-"$KOTLINC" -Werror -cp "$CLASSPATH:$BUILD_DIR/classes" \
-    -d "$BUILD_DIR/test-classes" \
-    "$TEST_DIR/com/dabendan/ezsign/EzSignUnitTest.kt"
-
-java -cp "$CLASSPATH:$BUILD_DIR/classes:$BUILD_DIR/test-classes" com.dabendan.ezsign.EzSignUnitTest
-
-echo "=== [4/6] Running D8 DEXer & Packaging APK ==="
-find "$BUILD_DIR/classes" -name "*.class" > "$BUILD_DIR/class_list.txt"
-"$BUILD_TOOLS/d8" --min-api 24 --output "$BUILD_DIR/dex" --lib "$ANDROID_JAR" "$KOTLIN_STDLIB" @"$BUILD_DIR/class_list.txt"
-
+echo "=== [2/6] Compiling TapInk Resources & Kotlin Sources (API 35, -Werror) ==="
 "$BUILD_TOOLS/aapt2" compile \
     --dir "$RES_DIR" \
     -o "$BUILD_DIR/res.zip"
 
 "$BUILD_TOOLS/aapt2" link \
+    --auto-add-overlay \
     -I "$ANDROID_JAR" \
     --manifest "$MANIFEST" \
     -R "$BUILD_DIR/res.zip" \
+    --java "$BUILD_DIR/gen" \
     -o "$BUILD_DIR/unsigned.apk"
+
+"$JAVA_HOME/bin/javac" -cp "$ANDROID_JAR" -d "$BUILD_DIR/classes" "$BUILD_DIR/gen/com/dabendan/tapink/R.java"
+
+"$KOTLINC" -Werror -cp "$CLASSPATH:$BUILD_DIR/classes" \
+    -d "$BUILD_DIR/classes" \
+    "$SRC_DIR/com/dabendan/tapink/LogManager.kt" \
+    "$SRC_DIR/com/dabendan/tapink/TapInkLogService.kt" \
+    "$SRC_DIR/com/dabendan/tapink/Lzo1x.kt" \
+    "$SRC_DIR/com/dabendan/tapink/FloydSteinbergDitherer.kt" \
+    "$SRC_DIR/com/dabendan/tapink/TapInkProtocol.kt" \
+    "$SRC_DIR/com/dabendan/tapink/ShareNfcActivity.kt"
+
+echo "=== [3/6] Compiling & Executing JVM Unit Tests (-Werror) ==="
+"$KOTLINC" -Werror -cp "$CLASSPATH:$BUILD_DIR/classes" \
+    -d "$BUILD_DIR/test-classes" \
+    "$TEST_DIR/com/dabendan/tapink/TapInkUnitTest.kt"
+
+java -cp "$CLASSPATH:$BUILD_DIR/classes:$BUILD_DIR/test-classes" com.dabendan.tapink.TapInkUnitTest
+
+echo "=== [4/6] Running D8 DEXer & Packaging APK ==="
+find "$BUILD_DIR/classes" -name "*.class" > "$BUILD_DIR/class_list.txt"
+"$BUILD_TOOLS/d8" --min-api 24 --output "$BUILD_DIR/dex" --lib "$ANDROID_JAR" "$KOTLIN_STDLIB" @"$BUILD_DIR/class_list.txt"
 
 python3 -c "
 import zipfile, os
@@ -110,7 +114,7 @@ echo "=== [5/6] Zipalign & Signing APK (Debug + Release) ==="
 "$BUILD_TOOLS/apksigner" sign \
     --ks "$DEBUG_KEYSTORE" \
     --ks-pass "pass:android" \
-    --out "$BUILD_DIR/ezsign-nfc-updater.apk" \
+    --out "$BUILD_DIR/tapink.apk" \
     "$BUILD_DIR/aligned.apk"
 
 # 2. Release-signed APK
@@ -119,12 +123,13 @@ echo "=== [5/6] Zipalign & Signing APK (Debug + Release) ==="
     --ks-key-alias "$RELEASE_KEY_ALIAS" \
     --ks-pass "pass:$RELEASE_KEY_PASS" \
     --key-pass "pass:$RELEASE_KEY_PASS" \
-    --out "$BUILD_DIR/ezsign-nfc-updater-release.apk" \
+    --out "$BUILD_DIR/tapink-release.apk" \
     "$BUILD_DIR/aligned.apk"
 
 echo "=== [6/6] Packaging & Signing Google Play Store App Bundle (.aab) ==="
 "$BUILD_TOOLS/aapt2" link \
     --proto-format \
+    --auto-add-overlay \
     -I "$ANDROID_JAR" \
     --manifest "$MANIFEST" \
     -R "$BUILD_DIR/res.zip" \
@@ -154,8 +159,8 @@ with zipfile.ZipFile(proto_apk, 'r') as zin, zipfile.ZipFile(base_zip, 'w', comp
             zout.write(full_path, 'dex/' + f)
 "
 
-AAB_UNSIGNED="$BUILD_DIR/ezsign-nfc-updater-unsigned.aab"
-AAB_RELEASE="$BUILD_DIR/ezsign-nfc-updater-release.aab"
+AAB_UNSIGNED="$BUILD_DIR/tapink-unsigned.aab"
+AAB_RELEASE="$BUILD_DIR/tapink-release.aab"
 rm -f "$AAB_UNSIGNED" "$AAB_RELEASE"
 
 java -jar "$BUNDLETOOL_JAR" build-bundle \
@@ -175,7 +180,7 @@ jarsigner \
 java -jar "$BUNDLETOOL_JAR" validate --bundle="$AAB_RELEASE"
 
 echo "=== Build, Unit Tests & Play Store AAB Validation Completed Successfully ==="
-ls -lh "$BUILD_DIR/ezsign-nfc-updater.apk" "$BUILD_DIR/ezsign-nfc-updater-release.apk" "$AAB_RELEASE"
+ls -lh "$BUILD_DIR/tapink.apk" "$BUILD_DIR/tapink-release.apk" "$AAB_RELEASE"
 
 for arg in "$@"; do
     case "$arg" in
@@ -186,7 +191,7 @@ for arg in "$@"; do
         --install-device)
             echo "=== [DEPLOY] Deploying APK to Physical Android Device via Windows ADB (Install Only) ==="
             WIN_ADB="/mnt/c/Users/BRZ_RTH/platform-tools/adb.exe"
-            WIN_TEMP_APK="/mnt/c/Users/BRZ_RTH/AppData/Local/Temp/ezsign-nfc-updater.apk"
+            WIN_TEMP_APK="/mnt/c/Users/BRZ_RTH/AppData/Local/Temp/tapink.apk"
             /usr/bin/adb kill-server 2>/dev/null || true
             "$WIN_ADB" start-server
             DEVICE_SERIAL=$("$WIN_ADB" devices -l | tr -d '\r' | awk '/model:Pixel|55041FDCG0003R/ && $2=="device" {print $1; exit}')
@@ -198,8 +203,8 @@ for arg in "$@"; do
                 exit 1
             fi
             echo "Detected device: $DEVICE_SERIAL (NOTE: Physical phone is strictly install-only; use --e2e-emulator for testing)"
-            cp "$BUILD_DIR/ezsign-nfc-updater.apk" "$WIN_TEMP_APK"
-            "$WIN_ADB" -s "$DEVICE_SERIAL" install -r -g 'C:\Users\BRZ_RTH\AppData\Local\Temp\ezsign-nfc-updater.apk'
+            cp "$BUILD_DIR/tapink.apk" "$WIN_TEMP_APK"
+            "$WIN_ADB" -s "$DEVICE_SERIAL" install -r -g 'C:\Users\BRZ_RTH\AppData\Local\Temp\tapink.apk'
             ;;
     esac
 done

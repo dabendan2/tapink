@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TapInk NFC</string>
+    <string name="share_action_label">An E-Paper senden (TapInk)</string>
+
+    <!-- UI Headlines & Subtitles -->
+    <string name="ui_ready_headline">Bereit zum E-Paper-Update</string>
+    <string name="ui_ready_subtitle">Halten Sie die obere Rückseite Ihres Smartphones ruhig an das E-Paper</string>
+    <string name="ui_pick_image_headline">Bild zum Senden wählen</string>
+    <string name="ui_pick_image_subtitle">Wählen Sie ein Bild aus der Galerie für Ihr E-Paper-Display</string>
+    <string name="ui_picker_chooser_title">Bild auswählen</string>
+    <string name="ui_nfc_disabled_headline">NFC ist deaktiviert</string>
+    <string name="ui_nfc_disabled_subtitle">Das E-Paper benötigt NFC zur drahtlosen Stromversorgung und Bildübertragung</string>
+    <string name="ui_transferring_headline">Übertragung &amp; Aktualisierung…</string>
+    <string name="ui_transferring_subtitle">Bitte das Smartphone bis zum Abschluss ruhig am Display halten</string>
+    <string name="ui_success_headline">E-Paper aktualisiert!</string>
+
+    <!-- Error Headlines & Subtitles -->
+    <string name="ui_err_timeout_headline">Kein E-Paper erkannt</string>
+    <string name="ui_err_timeout_subtitle">Richten Sie die NFC-Antenne Ihres Smartphones auf das Display aus</string>
+    <string name="ui_err_unsupported_headline">Nicht unterstütztes E-Paper</string>
+    <string name="ui_err_unsupported_subtitle">Bitte prüfen Sie die Modellkompatibilität und halten Sie das Gerät erneut daran</string>
+    <string name="ui_err_disconnected_headline">Verbindung unterbrochen</string>
+    <string name="ui_err_disconnected_subtitle">Das Display benötigt einige Sekunden NFC-Strom. Bitte erneut ruhig dranhalten</string>
+    <string name="ui_err_image_headline">Bild konnte nicht gelesen werden</string>
+    <string name="ui_err_image_subtitle">Bitte kehren Sie zur vorherigen App zurück und teilen Sie das Bild erneut</string>
+    <string name="ui_err_reader_headline">NFC-Leser konnte nicht starten</string>
+    <string name="ui_err_reader_subtitle">Bitte prüfen Sie in den Systemeinstellungen, ob NFC aktiviert ist</string>
+    <string name="ui_error_overlay_pill">! Erneut dranhalten</string>
+
+    <!-- Buttons & Segments -->
+    <string name="ui_btn_portrait">Hochformat</string>
+    <string name="ui_btn_landscape">Querformat</string>
+    <string name="ui_btn_cancel">Abbrechen</string>
+    <string name="ui_btn_close">Schließen</string>
+    <string name="ui_btn_retry">Erneut scannen</string>
+    <string name="ui_btn_enable_nfc">NFC aktivieren</string>
+
+    <!-- Hardware Color Labels -->
+    <string name="ui_color_bw">2-Farben S/W</string>
+    <string name="ui_color_bwr">3-Farben S/W/R</string>
+    <string name="ui_color_bwry">4-Farben BWRY</string>
+    <string name="ui_color_spectra6">6-Farben Voll</string>
+
+    <!-- Accessibility Announcements -->
+    <string name="ui_a11y_transferring">E-Paper erkannt. Übertragung läuft, bitte ruhig halten.</string>
+    <string name="ui_a11y_success">E-Paper-Aktualisierung abgeschlossen.</string>
+</resources>

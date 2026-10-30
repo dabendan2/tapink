@@ -1,4 +1,4 @@
-package com.dabendan.ezsign
+package com.dabendan.tapink
 
 import android.app.Service
 import android.content.Intent
@@ -6,11 +6,11 @@ import android.os.IBinder
 import java.io.FileDescriptor
 import java.io.PrintWriter
 
-class EzSignLogService : Service() {
+class TapInkLogService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        LogManager.i(TAG, "EzSignLogService started for dumpsys inspection")
+        LogManager.i(TAG, "TapInkLogService started for dumpsys inspection")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -29,9 +29,9 @@ class EzSignLogService : Service() {
 
     override fun dump(fd: FileDescriptor?, writer: PrintWriter, args: Array<out String>?) {
         writer.println("==================================================")
-        writer.println("       EZ SIGN 4.2\" NFC UPDATER SERVICE DUMP      ")
+        writer.println("          TAPINK NFC E-PAPER SERVICE DUMP         ")
         writer.println("==================================================")
-        writer.println("Package Name  : com.dabendan.ezsign")
+        writer.println("Package Name  : com.dabendan.tapink")
         writer.println("Last UI State : $lastState")
         writer.println("Last Error    : $lastError")
         writer.println("--------------------------------------------------")
@@ -49,7 +49,7 @@ class EzSignLogService : Service() {
     }
 
     companion object {
-        private const val TAG = "EzSignLogService"
+        private const val TAG = "TapInkLogService"
         @Volatile var lastState: String = "IDLE"
         @Volatile var lastError: String = "NONE"
     }

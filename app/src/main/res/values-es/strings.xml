@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TapInk NFC</string>
+    <string name="share_action_label">Enviar a E-Paper (TapInk)</string>
+
+    <!-- UI Headlines & Subtitles -->
+    <string name="ui_ready_headline">Listo para actualizar E-Paper</string>
+    <string name="ui_ready_subtitle">Mantenga la parte superior trasera de su teléfono fija contra el E-Paper</string>
+    <string name="ui_pick_image_headline">Seleccionar imagen para enviar</string>
+    <string name="ui_pick_image_subtitle">Elija una foto de su galería para actualizar la pantalla E-Paper</string>
+    <string name="ui_picker_chooser_title">Seleccionar imagen</string>
+    <string name="ui_nfc_disabled_headline">NFC está desactivado</string>
+    <string name="ui_nfc_disabled_subtitle">La pantalla E-Paper requiere NFC para alimentación inalámbrica y transferencia</string>
+    <string name="ui_transferring_headline">Transfiriendo y actualizando…</string>
+    <string name="ui_transferring_subtitle">Mantenga su teléfono fijo contra la pantalla hasta finalizar</string>
+    <string name="ui_success_headline">¡E-Paper actualizado!</string>
+
+    <!-- Error Headlines & Subtitles -->
+    <string name="ui_err_timeout_headline">No se detectó E-Paper</string>
+    <string name="ui_err_timeout_subtitle">Alinee la antena NFC trasera de su teléfono con el E-Paper y no lo mueva</string>
+    <string name="ui_err_unsupported_headline">E-Paper no compatible</string>
+    <string name="ui_err_unsupported_subtitle">Verifique que el modelo E-Paper sea compatible y vuelva a acercarlo</string>
+    <string name="ui_err_disconnected_headline">Conexión interrumpida</string>
+    <string name="ui_err_disconnected_subtitle">El E-Paper necesita energía NFC continua durante unos segundos. Manténgalo fijo</string>
+    <string name="ui_err_image_headline">No se pudo leer la imagen</string>
+    <string name="ui_err_image_subtitle">Vuelva a la aplicación anterior y comparta la imagen de nuevo</string>
+    <string name="ui_err_reader_headline">Error al iniciar NFC</string>
+    <string name="ui_err_reader_subtitle">Verifique que el NFC esté activado en los ajustes del teléfono</string>
+    <string name="ui_error_overlay_pill">! Acercar de nuevo</string>
+
+    <!-- Buttons & Segments -->
+    <string name="ui_btn_portrait">Vertical</string>
+    <string name="ui_btn_landscape">Horizontal</string>
+    <string name="ui_btn_cancel">Cancelar</string>
+    <string name="ui_btn_close">Cerrar</string>
+    <string name="ui_btn_retry">Reintentar</string>
+    <string name="ui_btn_enable_nfc">Activar NFC</string>
+
+    <!-- Hardware Color Labels -->
+    <string name="ui_color_bw">2 Colores B/N</string>
+    <string name="ui_color_bwr">3 Colores BNR</string>
+    <string name="ui_color_bwry">4 Colores BWRY</string>
+    <string name="ui_color_spectra6">6 Colores</string>
+
+    <!-- Accessibility Announcements -->
+    <string name="ui_a11y_transferring">E-Paper detectado. Transfiriendo imagen, no mueva el teléfono.</string>
+    <string name="ui_a11y_success">Actualización de E-Paper completada.</string>
+</resources>

@@ -1,4 +1,4 @@
-package com.dabendan.ezsign
+package com.dabendan.tapink
 
 object Lzo1x {
     private const val M1_MAX_OFFSET = 1024

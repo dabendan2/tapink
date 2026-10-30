@@ -1,10 +1,10 @@
-package com.dabendan.ezsign
+package com.dabendan.tapink
 
 import android.nfc.tech.IsoDep
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 
-class EzSignProtocolException(message: String, cause: Throwable? = null) : Exception(message, cause)
+class TapInkProtocolException(message: String, cause: Throwable? = null) : Exception(message, cause)
 
 interface IsoDepTransceiver {
     @Throws(IOException::class)
@@ -235,7 +235,7 @@ class SimulatedIsoDepTransceiver(
     }
 }
 
-object EzSignProtocol {
+object TapInkProtocol {
 
     val CONFIG_INFO_CMD = byteArrayOf(0x00, 0xD1.toByte(), 0x00, 0x00)
     val PIN_VERIFY_CMD = byteArrayOf(0x00, 0x20, 0x00, 0x01, 0x04, 0x20, 0x09, 0x12, 0x10)
@@ -284,7 +284,7 @@ object EzSignProtocol {
             if (KNOWN_SW1.contains(sw1)) {
                 if (sw1 != 0x90 || sw2 != 0x00) {
                     val swHex = String.format("%02X%02X", sw1, sw2)
-                    throw EzSignProtocolException("$contextName 失敗，APDU 狀態碼異常 (SW=$swHex)")
+                    throw TapInkProtocolException("$contextName 失敗，APDU 狀態碼異常 (SW=$swHex)")
                 }
             }
         }
@@ -297,7 +297,7 @@ object EzSignProtocol {
             bytes = bytes.copyOfRange(0, bytes.size - 2)
         }
         if (bytes.isEmpty()) {
-            throw EzSignProtocolException("讀取硬體配置 (00D10000) 回傳空資料")
+            throw TapInkProtocolException("讀取硬體配置 (00D10000) 回傳空資料")
         }
 
         var rawWidth = -1
@@ -310,20 +310,20 @@ object EzSignProtocol {
         var i = 0
         while (i < bytes.size) {
             if (i + 2 > bytes.size) {
-                throw EzSignProtocolException("TLV 格式損毀 (offset=$i)")
+                throw TapInkProtocolException("TLV 格式損毀 (offset=$i)")
             }
             val tag = bytes[i].toInt() and 0xFF
             val len = bytes[i + 1].toInt() and 0xFF
             val start = i + 2
             val end = start + len
             if (end > bytes.size) {
-                throw EzSignProtocolException("TLV 長度溢位 (tag=0x${String.format("%02X", tag)}, len=$len)")
+                throw TapInkProtocolException("TLV 長度溢位 (tag=0x${String.format("%02X", tag)}, len=$len)")
             }
             val value = bytes.copyOfRange(start, end)
             when (tag) {
                 0xA0 -> {
                     if (value.size != 7) {
-                        throw EzSignProtocolException("Tag 0xA0 長度錯誤 (預期 7 bytes, 實得 ${value.size})")
+                        throw TapInkProtocolException("Tag 0xA0 長度錯誤 (預期 7 bytes, 實得 ${value.size})")
                     }
                     colorCode = value[2].toInt() and 0xFF
                     rawHeight = ((value[3].toInt() and 0xFF) shl 8) or (value[4].toInt() and 0xFF)
@@ -345,7 +345,7 @@ object EzSignProtocol {
         }
 
         if (rawWidth <= 0 || rawHeight <= 0 || colorCode < 0) {
-            throw EzSignProtocolException("硬體回傳缺少有效螢幕規格 TLV (Tag 0xA0: ${rawWidth}x${rawHeight})")
+            throw TapInkProtocolException("硬體回傳缺少有效螢幕規格 TLV (Tag 0xA0: ${rawWidth}x${rawHeight})")
         }
 
         val (resolvedWidth, resolvedHeight, resolvedColorMode) = resolveFmsHardwareSpec(
@@ -467,7 +467,7 @@ object EzSignProtocol {
             val cfgResp = transceiver.transceive(CONFIG_INFO_CMD)
             val cfg = parseHardwareConfig(cfgResp)
             LogManager.i(
-                "EzSignProtocol",
+                "TapInkProtocol",
                 "自動偵測硬體規格成功: ${cfg.modelSummary} (UID=${cfg.uidHex}, color=0x${String.format("%02X", cfg.colorCode)}, lzo=${cfg.compressionSupported}, rawTlv=${bytesToHex(cfgResp)})"
             )
 
@@ -479,7 +479,7 @@ object EzSignProtocol {
                 cfg.colorMode
             )
             if (packedHardwareBytes.size != expectedBytes) {
-                throw EzSignProtocolException(
+                throw TapInkProtocolException(
                     "影像緩衝區大小不符 (${cfg.modelSummary}): 預期 $expectedBytes bytes, 實得 ${packedHardwareBytes.size} bytes"
                 )
             }
@@ -547,12 +547,12 @@ object EzSignProtocol {
 
             reportMonotonic(4, 4, 100, "${cfg.modelSummary} 更新完成！")
             return cfg
-        } catch (e: EzSignProtocolException) {
+        } catch (e: TapInkProtocolException) {
             throw e
         } catch (e: IOException) {
-            throw EzSignProtocolException("NFC 通訊中斷或感應移開 (${e.message ?: "IOException"})，請緊貼電子紙重試", e)
+            throw TapInkProtocolException("NFC 通訊中斷或感應移開 (${e.message ?: "IOException"})，請緊貼電子紙重試", e)
         } catch (e: Exception) {
-            throw EzSignProtocolException("NFC 協定錯誤: ${e.message}", e)
+            throw TapInkProtocolException("NFC 協定錯誤: ${e.message}", e)
         }
     }
 
@@ -594,7 +594,7 @@ object EzSignProtocol {
                 val resp = try {
                     transceiver.transceive(cmd)
                 } catch (ioe: IOException) {
-                    throw EzSignProtocolException(
+                    throw TapInkProtocolException(
                         "寫入影像中斷 (第 ${blockIdx + 1}/$totalBlocks 區塊感應斷開): ${ioe.message}",
                         ioe
                     )
@@ -639,7 +639,7 @@ object EzSignProtocol {
             val resp = try {
                 transceiver.transceive(cmd)
             } catch (ioe: IOException) {
-                throw EzSignProtocolException(
+                throw TapInkProtocolException(
                     "寫入未壓縮影像中斷 (第 ${pktIdx + 1}/$totalPackets 包斷開): ${ioe.message}",
                     ioe
                 )
@@ -675,7 +675,7 @@ object EzSignProtocol {
                 val stepSleep = 250L
                 while (System.currentTimeMillis() - startTime < initialWaitMs) {
                     if (!transceiver.isConnected()) {
-                        throw EzSignProtocolException("電子紙刷新期間 NFC 供電中斷，畫面可能未完整更新，請重試")
+                        throw TapInkProtocolException("電子紙刷新期間 NFC 供電中斷，畫面可能未完整更新，請重試")
                     }
                     val elapsedMs = System.currentTimeMillis() - startTime
                     val elapsedSec = elapsedMs / 1000.0
@@ -695,16 +695,16 @@ object EzSignProtocol {
 
         while (System.currentTimeMillis() - startTime < timeoutMs) {
             if (!transceiver.isConnected()) {
-                throw EzSignProtocolException("電子紙刷新期間 NFC 供電中斷，畫面可能未完整更新，請重試")
+                throw TapInkProtocolException("電子紙刷新期間 NFC 供電中斷，畫面可能未完整更新，請重試")
             }
             val resp = try {
                 transceiver.transceive(BUSY_STATUS_CMD)
             } catch (ioe: IOException) {
-                throw EzSignProtocolException("電子紙刷新期間讀取狀態斷線: ${ioe.message}", ioe)
+                throw TapInkProtocolException("電子紙刷新期間讀取狀態斷線: ${ioe.message}", ioe)
             }
 
             if (resp.isEmpty()) {
-                throw EzSignProtocolException("電子紙刷新狀態回傳空值 (F0DE000001)")
+                throw TapInkProtocolException("電子紙刷新狀態回傳空值 (F0DE000001)")
             }
 
             val busyFlag = resp[0].toInt() and 0xFF
@@ -726,6 +726,6 @@ object EzSignProtocol {
             }
         }
 
-        throw EzSignProtocolException("電子紙刷新逾時 (${timeoutMs / 1000}秒未回傳 0x00 完成訊號)")
+        throw TapInkProtocolException("電子紙刷新逾時 (${timeoutMs / 1000}秒未回傳 0x00 完成訊號)")
     }
 }

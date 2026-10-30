@@ -1,4 +1,4 @@
-package com.dabendan.ezsign
+package com.dabendan.tapink
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -95,7 +95,7 @@ object FloydSteinbergDitherer {
                     b == 0x30 -> BWR_3COLOR
                     b == 0x31 -> BWRY_4COLOR
                     (b ushr 4) == 6 -> SPECTRA_6COLOR
-                    else -> throw EzSignProtocolException(
+                    else -> throw TapInkProtocolException(
                         "不支援的硬體色碼: 0x${String.format("%02X", b)}"
                     )
                 }

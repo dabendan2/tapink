@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TapInk 전자종이</string>
+    <string name="share_action_label">전자종이로 전송 (TapInk)</string>
+
+    <!-- UI Headlines & Subtitles -->
+    <string name="ui_ready_headline">전자종이 업데이트 준비 완료</string>
+    <string name="ui_ready_subtitle">휴대폰 뒷면 상단을 전자종이에 밀착한 채 움직이지 마세요</string>
+    <string name="ui_pick_image_headline">전송할 이미지 선택</string>
+    <string name="ui_pick_image_subtitle">갤러리에서 전자종이에 표시할 사진을 선택하세요</string>
+    <string name="ui_picker_chooser_title">이미지 선택</string>
+    <string name="ui_nfc_disabled_headline">NFC 기능을 켜주세요</string>
+    <string name="ui_nfc_disabled_subtitle">전자종이 전원 공급 및 화면 전송을 위해 NFC 기능이 필요합니다</string>
+    <string name="ui_transferring_headline">데이터 전송 및 화면 갱신 중…</string>
+    <string name="ui_transferring_subtitle">완료될 때까지 휴대폰을 떼지 말고 그대로 유지해 주세요</string>
+    <string name="ui_success_headline">전자종이 업데이트 완료!</string>
+
+    <!-- Error Headlines & Subtitles -->
+    <string name="ui_err_timeout_headline">전자종이가 감지되지 않음</string>
+    <string name="ui_err_timeout_subtitle">휴대폰 뒷면 NFC 안테나를 전자종이에 맞추고 고정해 주세요</string>
+    <string name="ui_err_unsupported_headline">지원하지 않는 전자종이</string>
+    <string name="ui_err_unsupported_subtitle">지원되는 모델인지 확인한 후 다시 태그해 주세요</string>
+    <string name="ui_err_disconnected_headline">전송 중단됨 (미완료)</string>
+    <string name="ui_err_disconnected_subtitle">수 초간 지속적인 NFC 전력 공급이 필요합니다. 다시 밀착해 주세요</string>
+    <string name="ui_err_image_headline">이미지를 읽을 수 없음</string>
+    <string name="ui_err_image_subtitle">이전 앱으로 돌아가 이미지를 다시 공유해 주세요</string>
+    <string name="ui_err_reader_headline">NFC 기능을 시작할 수 없음</string>
+    <string name="ui_err_reader_subtitle">설정에서 NFC가 켜져 있는지 확인한 후 다시 시도해 주세요</string>
+    <string name="ui_error_overlay_pill">! 다시 태그해 주세요</string>
+
+    <!-- Buttons & Segments -->
+    <string name="ui_btn_portrait">세로</string>
+    <string name="ui_btn_landscape">가로</string>
+    <string name="ui_btn_cancel">취소</string>
+    <string name="ui_btn_close">닫기</string>
+    <string name="ui_btn_retry">다시 스캔</string>
+    <string name="ui_btn_enable_nfc">NFC 켜기</string>
+
+    <!-- Hardware Color Labels -->
+    <string name="ui_color_bw">2색 흑백</string>
+    <string name="ui_color_bwr">3색 흑백적</string>
+    <string name="ui_color_bwry">4색 컬러 BWRY</string>
+    <string name="ui_color_spectra6">6색 풀컬러</string>
+
+    <!-- Accessibility Announcements -->
+    <string name="ui_a11y_transferring">전자종이가 감지되었습니다. 전송 중이니 움직이지 마세요.</string>
+    <string name="ui_a11y_success">전자종이 업데이트가 완료되었습니다.</string>
+</resources>

@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-test-bundle:
-    name: Build APK/AAB & Run JVM Unit Tests (API 35)
+    name: Build TapInk APK/AAB & Run JVM Unit Tests (API 35)
     runs-on: ubuntu-latest
 
     steps:
@@ -62,11 +62,11 @@ jobs:
       - name: Upload Release APK & Play Store AAB Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ezsign-release-bundles
+          name: tapink-release-bundles
           path: |
-            app/build/ezsign-nfc-updater-release.aab
-            app/build/ezsign-nfc-updater-release.apk
-            app/build/ezsign-nfc-updater.apk
+            app/build/tapink-release.aab
+            app/build/tapink-release.apk
+            app/build/tapink.apk
           if-no-files-found: error
 
       - name: Publish GitHub Release on Version Tag
@@ -74,6 +74,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            app/build/ezsign-nfc-updater-release.aab
-            app/build/ezsign-nfc-updater-release.apk
+            app/build/tapink-release.aab
+            app/build/tapink-release.apk
           generate_release_notes: true

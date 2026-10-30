@@ -1,4 +1,4 @@
-package com.dabendan.ezsign
+package com.dabendan.tapink
 
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
@@ -124,8 +124,8 @@ class ShareNfcActivity : Activity() {
         if (currentState == UiState.WAITING_NFC && !isTransferring.get()) {
             handleRecoverableError(
                 rawError = "逾時未偵測到 NFC 電子紙 (${detectTimeoutMs / 1000}秒)",
-                userHeadline = "尚未偵測到電子紙",
-                userSubtitle = "請確認手機背面頂端已貼靠電子紙感應區，並保持不動"
+                userHeadline = getString(R.string.ui_err_timeout_headline),
+                userSubtitle = getString(R.string.ui_err_timeout_subtitle)
             )
         }
     }
@@ -148,8 +148,8 @@ class ShareNfcActivity : Activity() {
             if (mode == "NON_ISODEP") {
                 handleRecoverableError(
                     rawError = "不支援的 NFC 標籤類型 (Tag 不支援 IsoDep / ISO 14443-4)",
-                    userHeadline = "無法識別此電子紙",
-                    userSubtitle = "請確認電子紙型號受支援，並將手機背面頂端對準感應區"
+                    userHeadline = getString(R.string.ui_err_unsupported_headline),
+                    userSubtitle = getString(R.string.ui_err_unsupported_subtitle)
                 )
                 return
             }
@@ -278,7 +278,7 @@ class ShareNfcActivity : Activity() {
         // ZONE 1: Header Zone (Centered Headline + Centered Supporting Text)
         // =====================================================================
         headerTitleView = TextView(this).apply {
-            text = "準備更新電子紙"
+            text = getString(R.string.ui_ready_headline)
             contentDescription = "status_text"
             setTextColor(Color.parseColor(COLOR_ON_SURFACE))
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 22f)
@@ -292,7 +292,7 @@ class ShareNfcActivity : Activity() {
         bottomSheetCard.addView(headerTitleView)
 
         headerSubtitleView = TextView(this).apply {
-            text = "請將手機背面頂端貼靠電子紙，並保持不動"
+            text = getString(R.string.ui_ready_subtitle)
             contentDescription = "status_subtitle"
             setTextColor(Color.parseColor(COLOR_ON_SURFACE_VARIANT))
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
@@ -401,7 +401,7 @@ class ShareNfcActivity : Activity() {
 
         // Error Overlay Pill centered on the E-Paper card: "[ ! 請重新貼靠電子紙 ]"
         errorOverlayPill = TextView(this).apply {
-            text = "! 請重新貼靠電子紙"
+            text = getString(R.string.ui_error_overlay_pill)
             contentDescription = "error_overlay_pill"
             setTextColor(Color.parseColor(COLOR_ON_ERROR_CONTAINER))
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
@@ -507,7 +507,7 @@ class ShareNfcActivity : Activity() {
         }
 
         portraitSegmentBtn = TextView(this).apply {
-            text = "直向"
+            text = getString(R.string.ui_btn_portrait)
             contentDescription = "orientation_portrait_btn"
             gravity = Gravity.CENTER
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
@@ -521,7 +521,7 @@ class ShareNfcActivity : Activity() {
         }
 
         landscapeSegmentBtn = TextView(this).apply {
-            text = "橫向"
+            text = getString(R.string.ui_btn_landscape)
             contentDescription = "orientation_landscape_btn"
             gravity = Gravity.CENTER
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
@@ -544,7 +544,7 @@ class ShareNfcActivity : Activity() {
         readyFooterRow.addView(spacer)
 
         cancelTextBtn = Button(this).apply {
-            text = "取消"
+            text = getString(R.string.ui_btn_cancel)
             contentDescription = "cancel_button"
             isAllCaps = false
             setTextColor(Color.parseColor(COLOR_ON_SURFACE_VARIANT))
@@ -578,7 +578,7 @@ class ShareNfcActivity : Activity() {
         }
 
         closeOutlinedBtn = Button(this).apply {
-            text = "關閉"
+            text = getString(R.string.ui_btn_close)
             contentDescription = "close_button"
             isAllCaps = false
             setTextColor(Color.parseColor(COLOR_ON_SURFACE_VARIANT))
@@ -601,7 +601,7 @@ class ShareNfcActivity : Activity() {
         }
 
         retryTonalBtn = Button(this).apply {
-            text = "重新感應"
+            text = getString(R.string.ui_btn_retry)
             contentDescription = "retry_button"
             isAllCaps = false
             setTextColor(Color.parseColor(COLOR_ON_SECONDARY_CONTAINER))
@@ -716,14 +716,14 @@ class ShareNfcActivity : Activity() {
             incomingIntent.data == null
         ) {
             LogManager.i(TAG, "從桌面圖示啟動 (ACTION_MAIN)，自動開啟系統圖片選擇器")
-            headerTitleView.text = "選擇要傳送的圖片"
-            headerSubtitleView.text = "請從相簿挑選一張照片以更新至電子紙"
+            headerTitleView.text = getString(R.string.ui_pick_image_headline)
+            headerSubtitleView.text = getString(R.string.ui_pick_image_subtitle)
             try {
                 val pickIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
                     type = "image/*"
                     addCategory(Intent.CATEGORY_OPENABLE)
                 }
-                startActivityForResult(Intent.createChooser(pickIntent, "選擇圖片"), REQ_PICK_IMAGE)
+                startActivityForResult(Intent.createChooser(pickIntent, getString(R.string.ui_picker_chooser_title)), REQ_PICK_IMAGE)
                 return
             } catch (t: Throwable) {
                 LogManager.e(TAG, "無法開啟圖片選擇器: ${t.message}", t)
@@ -732,8 +732,8 @@ class ShareNfcActivity : Activity() {
 
         applySheetState(
             state = UiState.PREPARING,
-            headline = "準備更新電子紙",
-            subtitle = "請將手機背面頂端貼靠電子紙，並保持不動"
+            headline = getString(R.string.ui_ready_headline),
+            subtitle = getString(R.string.ui_ready_subtitle)
         )
 
         workerExecutor.execute {
@@ -757,8 +757,8 @@ class ShareNfcActivity : Activity() {
                 mainHandler.post {
                     handleRecoverableError(
                         rawError = "圖片讀取失敗: ${t.message}",
-                        userHeadline = "無法讀取分享的圖片",
-                        userSubtitle = "請返回原應用程式重新選擇圖片再試一次",
+                        userHeadline = getString(R.string.ui_err_image_headline),
+                        userSubtitle = getString(R.string.ui_err_image_subtitle),
                         throwable = t
                     )
                 }
@@ -813,8 +813,8 @@ class ShareNfcActivity : Activity() {
             syncServiceState("ERROR", "需要開啟 NFC 功能")
             applySheetState(
                 state = UiState.NFC_DISABLED,
-                headline = "需要開啟 NFC 功能",
-                subtitle = "電子紙螢幕需要透過手機 NFC 感應供電與傳輸畫面"
+                headline = getString(R.string.ui_nfc_disabled_headline),
+                subtitle = getString(R.string.ui_nfc_disabled_subtitle)
             )
             return
         }
@@ -829,8 +829,8 @@ class ShareNfcActivity : Activity() {
 
         applySheetState(
             state = UiState.WAITING_NFC,
-            headline = "準備更新電子紙",
-            subtitle = "請將手機背面頂端貼靠電子紙，並保持不動"
+            headline = getString(R.string.ui_ready_headline),
+            subtitle = getString(R.string.ui_ready_subtitle)
         )
         LogManager.i(TAG, "進入 WAITING_NFC 狀態，等待感應電子紙 (timeout=${detectTimeoutMs}ms)")
 
@@ -913,8 +913,8 @@ class ShareNfcActivity : Activity() {
             if (!quietLog) {
                 handleRecoverableError(
                     rawError = "啟動 NFC ReaderMode 失敗: ${t.message}",
-                    userHeadline = "無法啟動 NFC 感應功能",
-                    userSubtitle = "請確認手機 NFC 設定已開啟後再試一次",
+                    userHeadline = getString(R.string.ui_err_reader_headline),
+                    userSubtitle = getString(R.string.ui_err_reader_subtitle),
                     throwable = t
                 )
             }
@@ -957,8 +957,8 @@ class ShareNfcActivity : Activity() {
             mainHandler.post {
                 handleRecoverableError(
                     rawError = "不支援的 NFC 標籤類型 (僅支援 [$techList]，缺少 IsoDep)",
-                    userHeadline = "無法識別此電子紙",
-                    userSubtitle = "請確認電子紙型號受支援，並將手機背面頂端對準感應區"
+                    userHeadline = getString(R.string.ui_err_unsupported_headline),
+                    userSubtitle = getString(R.string.ui_err_unsupported_subtitle)
                 )
             }
             return
@@ -967,7 +967,7 @@ class ShareNfcActivity : Activity() {
         startTransferWithTransceiver(RealIsoDepTransceiver(isoDep), isSimulated = false)
     }
 
-    private fun formatHardwarePillLabel(cfg: EzSignProtocol.HardwareConfig): String {
+    private fun formatHardwarePillLabel(cfg: TapInkProtocol.HardwareConfig): String {
         val inchLabel = when {
             cfg.normWidth == 400 && cfg.normHeight == 300 -> "4.2\""
             cfg.normWidth == 296 && cfg.normHeight == 128 -> "2.9\""
@@ -978,10 +978,10 @@ class ShareNfcActivity : Activity() {
             else -> "${cfg.normWidth}×${cfg.normHeight}"
         }
         val colorLabel = when (cfg.colorMode) {
-            FloydSteinbergDitherer.ColorMode.BW_2COLOR -> "黑白雙色"
-            FloydSteinbergDitherer.ColorMode.BWR_3COLOR -> "黑白紅三色"
-            FloydSteinbergDitherer.ColorMode.BWRY_4COLOR -> "黑白紅黃"
-            FloydSteinbergDitherer.ColorMode.SPECTRA_6COLOR -> "六色全彩"
+            FloydSteinbergDitherer.ColorMode.BW_2COLOR -> getString(R.string.ui_color_bw)
+            FloydSteinbergDitherer.ColorMode.BWR_3COLOR -> getString(R.string.ui_color_bwr)
+            FloydSteinbergDitherer.ColorMode.BWRY_4COLOR -> getString(R.string.ui_color_bwry)
+            FloydSteinbergDitherer.ColorMode.SPECTRA_6COLOR -> getString(R.string.ui_color_spectra6)
         }
         return "$inchLabel $colorLabel"
     }
@@ -996,13 +996,13 @@ class ShareNfcActivity : Activity() {
         mainHandler.removeCallbacks(detectTimeoutRunnable)
         mainHandler.post {
             triggerHapticFeedback()
-            announceAccessibility("已感應到電子紙，正在傳輸，請保持不動")
+            announceAccessibility(getString(R.string.ui_a11y_transferring))
             currentProgress = 1
             rippleCanvasView.setProgress(1)
             applySheetState(
                 state = UiState.TRANSFERRING,
-                headline = "正在傳輸並刷新畫面…",
-                subtitle = "請保持貼靠，完成前請勿移開手機"
+                headline = getString(R.string.ui_transferring_headline),
+                subtitle = getString(R.string.ui_transferring_subtitle)
             )
         }
 
@@ -1010,7 +1010,7 @@ class ShareNfcActivity : Activity() {
             val refreshWaitMs = if (isSimulated) 150L else 2000L
             val refreshPollMs = if (isSimulated) 150L else 500L
             try {
-                val detectedCfg = EzSignProtocol.executeDynamicUpdate(
+                val detectedCfg = TapInkProtocol.executeDynamicUpdate(
                     transceiver = transceiver,
                     refreshInitialWaitMs = refreshWaitMs,
                     refreshPollIntervalMs = refreshPollMs,
@@ -1049,13 +1049,13 @@ class ShareNfcActivity : Activity() {
 
                 mainHandler.post {
                     triggerHapticFeedback()
-                    announceAccessibility("電子紙更新完成")
+                    announceAccessibility(getString(R.string.ui_a11y_success))
                     currentProgress = 100
                     rippleCanvasView.setProgress(100)
                     syncServiceState("SUCCESS", "NONE")
                     applySheetState(
                         state = UiState.SUCCESS,
-                        headline = "電子紙更新完成",
+                        headline = getString(R.string.ui_success_headline),
                         subtitle = ""
                     )
                     val dismissDelay = if (isSimulated) 450L else 1200L
@@ -1083,18 +1083,18 @@ class ShareNfcActivity : Activity() {
         return when {
             rawError.contains("感應斷開") || rawError.contains("Tag was lost") || rawError.contains("通訊中斷") || rawError.contains("刷新期間") ->
                 Pair(
-                    "感應中斷，尚未完成更新",
-                    "電子紙需要持續供電數秒，請重新貼靠並保持不動"
+                    getString(R.string.ui_err_disconnected_headline),
+                    getString(R.string.ui_err_disconnected_subtitle)
                 )
             rawError.contains("PIN") || rawError.contains("6982") || rawError.contains("色碼") || rawError.contains("規格") || rawError.contains("TLV") ->
                 Pair(
-                    "無法識別此電子紙",
-                    "請確認電子紙型號受支援，並將手機背面頂端對準感應區"
+                    getString(R.string.ui_err_unsupported_headline),
+                    getString(R.string.ui_err_unsupported_subtitle)
                 )
             else ->
                 Pair(
-                    "感應中斷，尚未完成更新",
-                    "電子紙需要持續供電數秒，請重新貼靠並保持不動"
+                    getString(R.string.ui_err_disconnected_headline),
+                    getString(R.string.ui_err_disconnected_subtitle)
                 )
         }
     }
@@ -1181,9 +1181,9 @@ class ShareNfcActivity : Activity() {
         footerZone.visibility = if (showReadyFooter || showErrorFooter) View.VISIBLE else View.GONE
 
         if (state == UiState.NFC_DISABLED) {
-            retryTonalBtn.text = "開啟 NFC"
+            retryTonalBtn.text = getString(R.string.ui_btn_enable_nfc)
         } else {
-            retryTonalBtn.text = "重新感應"
+            retryTonalBtn.text = getString(R.string.ui_btn_retry)
         }
 
         epaperCardWrapper.post {
@@ -1266,9 +1266,9 @@ class ShareNfcActivity : Activity() {
 
     private fun syncServiceState(state: String, error: String) {
         try {
-            EzSignLogService.lastState = state
-            EzSignLogService.lastError = error
-            startService(Intent(this, EzSignLogService::class.java).apply {
+            TapInkLogService.lastState = state
+            TapInkLogService.lastError = error
+            startService(Intent(this, TapInkLogService::class.java).apply {
                 putExtra("state", state)
                 putExtra("error", error)
             })
@@ -1459,7 +1459,7 @@ class ShareNfcActivity : Activity() {
     companion object {
         private const val TAG = "ShareNfcActivity"
         private const val REQ_PICK_IMAGE = 1001
-        const val ACTION_SIMULATE_NFC_TAG = "com.dabendan.ezsign.ACTION_SIMULATE_NFC_TAG"
+        const val ACTION_SIMULATE_NFC_TAG = "com.dabendan.tapink.ACTION_SIMULATE_NFC_TAG"
 
         // Material Design 3 Dark / Dynamic Color Tokens
         private const val COLOR_SURFACE_CONTAINER_LOW = "#191C20"

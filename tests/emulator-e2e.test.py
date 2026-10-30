@@ -18,12 +18,12 @@ ANDROID_SDK = "/home/ubuntu/android-sdk"
 EMULATOR_BIN = f"{ANDROID_SDK}/emulator/emulator"
 ADB_BIN = "/usr/bin/adb"
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-APK_PATH = os.path.join(PROJECT_DIR, "app", "build", "ezsign-nfc-updater.apk")
+APK_PATH = os.path.join(PROJECT_DIR, "app", "build", "tapink.apk")
 SCREENSHOT_DIR = os.path.join(PROJECT_DIR, "docs", "screenshots")
 os.makedirs(SCREENSHOT_DIR, exist_ok=True)
-PACKAGE = "com.dabendan.ezsign"
+PACKAGE = "com.dabendan.tapink"
 ACTIVITY = f"{PACKAGE}/.ShareNfcActivity"
-SERVICE = f"{PACKAGE}/.EzSignLogService"
+SERVICE = f"{PACKAGE}/.TapInkLogService"
 EMULATOR_SERIAL = "emulator-5554"
 
 
@@ -196,7 +196,7 @@ def is_share_activity_resumed():
     out, _, _ = adb("shell dumpsys activity activities")
     for line in out.splitlines():
         if "mResumedActivity" in line or "ResumedActivity" in line:
-            if ACTIVITY in line or "com.dabendan.ezsign/.ShareNfcActivity" in line:
+            if ACTIVITY in line or "com.dabendan.tapink/.ShareNfcActivity" in line:
                 return True
     return False
 
@@ -246,15 +246,16 @@ def main():
     xml_str = dump_ui_xml()
     status_node = find_node_by_desc(xml_str, "status_text")
     retry_node = find_node_by_desc(xml_str, "retry_button")
-    assert status_node is not None and "準備更新電子紙" in status_node.get("text", ""), f"Got {status_node}"
+    status_txt = status_node.get("text", "") if status_node else ""
+    assert any(k in status_txt for k in ("準備更新電子紙", "准备更新电子纸", "Ready to Update E-Paper", "電子ペーパーを更新する準備")), f"Got {status_node}"
     assert retry_node is None, "retry_button must be hidden in WAITING_NFC"
-    print(f" -> [PASS] Stage 1 Ready UI verified: '{status_node.get('text')}'")
+    print(f" -> [PASS] Stage 1 Ready UI verified: '{status_txt}'")
 
     # -------------------------------------------------------------------------
     # Scenario 2: Mid-Write RF Disconnect -> Error Overlay Pill & Buttons (Screenshot #2)
     # -------------------------------------------------------------------------
     print("\n[STEP 3] Scenario 2: Mid-Transfer Tag Lost -> Error Recovery Sheet & Screenshot...")
-    adb("shell am broadcast -a com.dabendan.ezsign.ACTION_SIMULATE_NFC_TAG --es mode TAG_LOST_MID_WRITE")
+    adb("shell am broadcast -a com.dabendan.tapink.ACTION_SIMULATE_NFC_TAG --es mode TAG_LOST_MID_WRITE")
     wait_for_service_state("ERROR", timeout=15)
     time.sleep(0.8)
     screenshot_error = os.path.join(SCREENSHOT_DIR, "02-error-retry.png")
@@ -264,16 +265,18 @@ def main():
     status_node = find_node_by_desc(xml_str, "status_text")
     overlay_node = find_node_by_desc(xml_str, "error_overlay_pill")
     retry_node = find_node_by_desc(xml_str, "retry_button")
-    assert status_node is not None and "感應中斷，尚未完成更新" in status_node.get("text", ""), f"Got {status_node}"
-    assert overlay_node is not None and "請重新貼靠電子紙" in overlay_node.get("text", ""), f"Got {overlay_node}"
+    err_txt = status_node.get("text", "") if status_node else ""
+    ov_txt = overlay_node.get("text", "") if overlay_node else ""
+    assert any(k in err_txt for k in ("感應中斷", "感应中断", "Connection Interrupted", "通信が中断")), f"Got {status_node}"
+    assert any(k in ov_txt for k in ("請重新貼靠電子紙", "请重新贴靠电子纸", "Tap E-Paper Again", "もう一度かざして")), f"Got {overlay_node}"
     assert retry_node is not None, "retry_button must be visible on error"
-    print(f" -> [PASS] Stage 4 Error Recovery UI verified: '{status_node.get('text')}'")
+    print(f" -> [PASS] Stage 4 Error Recovery UI verified: '{err_txt}'")
 
     # -------------------------------------------------------------------------
     # Scenario 3: Zero-Click Auto-Retry with 2.9" 296x128 2-Color Tag -> Transferring (Screenshot #3)
     # -------------------------------------------------------------------------
     print("\n[STEP 4] Scenario 3: Zero-Click Re-Tap with 2.9\" (296x128 黑白雙色) Tag -> Morphing Progress & Auto-Dismiss...")
-    adb("shell am broadcast -a com.dabendan.ezsign.ACTION_SIMULATE_NFC_TAG --es mode SUCCESS_290_BW --ei busy_polls 8")
+    adb("shell am broadcast -a com.dabendan.tapink.ACTION_SIMULATE_NFC_TAG --es mode SUCCESS_290_BW --ei busy_polls 8")
     time.sleep(0.6)
     screenshot_transfer_290 = os.path.join(SCREENSHOT_DIR, "03-transferring-290bw.png")
     capture_screenshot(screenshot_transfer_290)
@@ -308,7 +311,7 @@ def main():
     )
     print(" -> [PASS] singleTop onNewIntent NFC TAG_DISCOVERED interception verified (shared image preserved)!")
 
-    adb("shell am broadcast -a com.dabendan.ezsign.ACTION_SIMULATE_NFC_TAG --es mode SUCCESS_420_BWRY_COSV1 --ei busy_polls 6")
+    adb("shell am broadcast -a com.dabendan.tapink.ACTION_SIMULATE_NFC_TAG --es mode SUCCESS_420_BWRY_COSV1 --ei busy_polls 6")
     time.sleep(0.55)
     screenshot_transfer_420 = os.path.join(SCREENSHOT_DIR, "04-transferring-420bwry.png")
     capture_screenshot(screenshot_transfer_420)

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TapInk 電子ペーパー</string>
+    <string name="share_action_label">電子ペーパーへ転送 (TapInk)</string>
+
+    <!-- UI Headlines & Subtitles -->
+    <string name="ui_ready_headline">電子ペーパーを更新する準備ができました</string>
+    <string name="ui_ready_subtitle">スマートフォンの背面を電子ペーパーの中央にかざし、動かさないでください</string>
+    <string name="ui_pick_image_headline">転送する画像を選択</string>
+    <string name="ui_pick_image_subtitle">電子ペーパーに表示する画像をギャラリーから選択してください</string>
+    <string name="ui_picker_chooser_title">画像を選択</string>
+    <string name="ui_nfc_disabled_headline">NFC機能を有効にしてください</string>
+    <string name="ui_nfc_disabled_subtitle">電子ペーパーの給電と書き換えにはスマートフォンのNFC機能が必要です</string>
+    <string name="ui_transferring_headline">データを転送・画面を更新中…</string>
+    <string name="ui_transferring_subtitle">完了するまでスマートフォンを動かさずにかざしたままにしてください</string>
+    <string name="ui_success_headline">電子ペーパーの更新が完了しました</string>
+
+    <!-- Error Headlines & Subtitles -->
+    <string name="ui_err_timeout_headline">電子ペーパーが検出されません</string>
+    <string name="ui_err_timeout_subtitle">背面のNFCアンテナ位置を電子ペーパーに合わせ、動かさずにお待ちください</string>
+    <string name="ui_err_unsupported_headline">非対応の電子ペーパーです</string>
+    <string name="ui_err_unsupported_subtitle">対応モデル（EZ Sign等）であることを確認し、再度かざしてください</string>
+    <string name="ui_err_disconnected_headline">通信が中断されました</string>
+    <string name="ui_err_disconnected_subtitle">書き換えには数秒間の継続給電が必要です。もう一度かざして静止してください</string>
+    <string name="ui_err_image_headline">画像を読み込めませんでした</string>
+    <string name="ui_err_image_subtitle">元のアプリに戻り、もう一度画像を選択して共有してください</string>
+    <string name="ui_err_reader_headline">NFC読み取りを開始できません</string>
+    <string name="ui_err_reader_subtitle">端末の設定でNFCがオンになっていることを確認してください</string>
+    <string name="ui_error_overlay_pill">! もう一度かざしてください</string>
+
+    <!-- Buttons & Segments -->
+    <string name="ui_btn_portrait">縦向き</string>
+    <string name="ui_btn_landscape">横向き</string>
+    <string name="ui_btn_cancel">キャンセル</string>
+    <string name="ui_btn_close">閉じる</string>
+    <string name="ui_btn_retry">再スキャン</string>
+    <string name="ui_btn_enable_nfc">NFCを設定</string>
+
+    <!-- Hardware Color Labels -->
+    <string name="ui_color_bw">2色 白黒</string>
+    <string name="ui_color_bwr">3色 白黒赤</string>
+    <string name="ui_color_bwry">4色 カラー</string>
+    <string name="ui_color_spectra6">6色 フルカラー</string>
+
+    <!-- Accessibility Announcements -->
+    <string name="ui_a11y_transferring">電子ペーパーを検出しました。転送中です。動かさないでください。</string>
+    <string name="ui_a11y_success">電子ペーパーの更新が完了しました。</string>
+</resources>

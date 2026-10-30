@@ -1,4 +1,4 @@
-package com.dabendan.ezsign
+package com.dabendan.tapink
 
 import android.util.Log
 import java.text.SimpleDateFormat
@@ -7,7 +7,7 @@ import java.util.Locale
 import java.util.concurrent.CopyOnWriteArrayList
 
 object LogManager {
-    const val DEFAULT_TAG = "EzSignUpdater"
+    const val DEFAULT_TAG = "TapInk"
     const val MAX_LOG_LINES = 500
 
     private val logBuffer = CopyOnWriteArrayList<String>()

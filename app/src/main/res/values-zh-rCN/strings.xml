@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TapInk 电子纸</string>
+    <string name="share_action_label">刷入电子纸 (TapInk)</string>
+
+    <!-- UI Headlines & Subtitles -->
+    <string name="ui_ready_headline">准备更新电子纸</string>
+    <string name="ui_ready_subtitle">请将手机背面顶端贴靠电子纸，并保持不动</string>
+    <string name="ui_pick_image_headline">选择要传送的图片</string>
+    <string name="ui_pick_image_subtitle">请从相册挑选一张照片以更新至电子纸</string>
+    <string name="ui_picker_chooser_title">选择图片</string>
+    <string name="ui_nfc_disabled_headline">需要开启 NFC 功能</string>
+    <string name="ui_nfc_disabled_subtitle">电子纸屏幕需要通过手机 NFC 感应供电与传输画面</string>
+    <string name="ui_transferring_headline">正在传输并刷新画面…</string>
+    <string name="ui_transferring_subtitle">请保持贴靠，完成前请勿移开手机</string>
+    <string name="ui_success_headline">电子纸更新完成</string>
+
+    <!-- Error Headlines & Subtitles -->
+    <string name="ui_err_timeout_headline">尚未检测到电子纸</string>
+    <string name="ui_err_timeout_subtitle">请确认手机背面顶端已贴靠电子纸感应区，并保持不动</string>
+    <string name="ui_err_unsupported_headline">无法识别此电子纸</string>
+    <string name="ui_err_unsupported_subtitle">请确认电子纸型号受支持，并将手机背面顶端对准感应区</string>
+    <string name="ui_err_disconnected_headline">感应中断，尚未完成更新</string>
+    <string name="ui_err_disconnected_subtitle">电子纸需要持续供电数秒，请重新贴靠并保持不动</string>
+    <string name="ui_err_image_headline">无法读取分享的图片</string>
+    <string name="ui_err_image_subtitle">请返回原应用程序重新选择图片再试一次</string>
+    <string name="ui_err_reader_headline">无法启动 NFC 感应功能</string>
+    <string name="ui_err_reader_subtitle">请确认手机 NFC 设置已开启后再试一次</string>
+    <string name="ui_error_overlay_pill">! 请重新贴靠电子纸</string>
+
+    <!-- Buttons & Segments -->
+    <string name="ui_btn_portrait">竖向</string>
+    <string name="ui_btn_landscape">横向</string>
+    <string name="ui_btn_cancel">取消</string>
+    <string name="ui_btn_close">关闭</string>
+    <string name="ui_btn_retry">重新感应</string>
+    <string name="ui_btn_enable_nfc">开启 NFC</string>
+
+    <!-- Hardware Color Labels -->
+    <string name="ui_color_bw">黑白双色</string>
+    <string name="ui_color_bwr">黑白红三色</string>
+    <string name="ui_color_bwry">黑白红黄</string>
+    <string name="ui_color_spectra6">六色全彩</string>
+
+    <!-- Accessibility Announcements -->
+    <string name="ui_a11y_transferring">已感应到电子纸，正在传输，请保持不动</string>
+    <string name="ui_a11y_success">电子纸更新完成</string>
+</resources>

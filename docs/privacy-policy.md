@@ -1,7 +1,7 @@
 # 隱私權政策 (Privacy Policy)
 
 **生效日期：2026 年 10 月 31 日**  
-**應用程式名稱：EZ Sign 電子紙 (`com.dabendan.ezsign`)**
+**應用程式名稱：TapInk 瞬墨 — NFC 電子紙更新工具 (`com.dabendan.tapink`)**
 
 ## 1. 資料收集與使用 (Data Collection and Use)
 本應用程式為**純離線本地端工具 (100% Offline Utility)**，**不會**收集、儲存、分析、傳輸或分享您的任何個人資料、相片、裝置識別碼或使用紀錄。

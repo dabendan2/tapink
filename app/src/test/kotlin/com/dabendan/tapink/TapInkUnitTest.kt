@@ -1,8 +1,8 @@
-package com.dabendan.ezsign
+package com.dabendan.tapink
 
 import kotlin.random.Random
 
-object EzSignUnitTest {
+object TapInkUnitTest {
 
     private var passed = 0
     private var failed = 0
@@ -140,7 +140,7 @@ object EzSignUnitTest {
         var providedBytes: ByteArray? = null
         val progressHistory = mutableListOf<Int>()
 
-        val cfg = EzSignProtocol.executeDynamicUpdate(
+        val cfg = TapInkProtocol.executeDynamicUpdate(
             transceiver = sim,
             refreshInitialWaitMs = 50L,
             refreshPollIntervalMs = 20L,
@@ -180,7 +180,7 @@ object EzSignUnitTest {
         val sim = SimulatedIsoDepTransceiver(mode = SimulatedIsoDepTransceiver.MODE_SUCCESS_290_BW, busyPollCountBeforeIdle = 1)
         var providedBytes: ByteArray? = null
 
-        val cfg = EzSignProtocol.executeDynamicUpdate(
+        val cfg = TapInkProtocol.executeDynamicUpdate(
             transceiver = sim,
             refreshInitialWaitMs = 0L,
             refreshPollIntervalMs = 0L,
@@ -209,35 +209,35 @@ object EzSignUnitTest {
 
     private fun testProtocolFailFastOnUnsupportedColorCode() {
         val sim = SimulatedIsoDepTransceiver(mode = SimulatedIsoDepTransceiver.MODE_UNSUPPORTED_SPEC)
-        var caught: EzSignProtocolException? = null
+        var caught: TapInkProtocolException? = null
         try {
-            EzSignProtocol.executeDynamicUpdate(
+            TapInkProtocol.executeDynamicUpdate(
                 transceiver = sim,
                 refreshInitialWaitMs = 0L,
                 refreshPollIntervalMs = 0L,
                 imageProvider = { ByteArray(0) }
             ) { _, _, _, _ -> }
-        } catch (e: EzSignProtocolException) {
+        } catch (e: TapInkProtocolException) {
             caught = e
         }
-        assertTrue(caught != null, "Expected EzSignProtocolException on unsupported color code 0xFF")
+        assertTrue(caught != null, "Expected TapInkProtocolException on unsupported color code 0xFF")
         assertTrue(caught!!.message!!.contains("不支援的硬體色碼"), "Got: ${caught.message}")
     }
 
     private fun testProtocolFailFastOnMidWriteTagLost() {
         val sim = SimulatedIsoDepTransceiver(mode = SimulatedIsoDepTransceiver.MODE_TAG_LOST_MID_WRITE)
-        var caught: EzSignProtocolException? = null
+        var caught: TapInkProtocolException? = null
         try {
-            EzSignProtocol.executeDynamicUpdate(
+            TapInkProtocol.executeDynamicUpdate(
                 transceiver = sim,
                 refreshInitialWaitMs = 0L,
                 refreshPollIntervalMs = 0L,
                 imageProvider = { ByteArray(30000) { (it % 251).toByte() } }
             ) { _, _, _, _ -> }
-        } catch (e: EzSignProtocolException) {
+        } catch (e: TapInkProtocolException) {
             caught = e
         }
-        assertTrue(caught != null, "Expected EzSignProtocolException on mid-write tag lost")
+        assertTrue(caught != null, "Expected TapInkProtocolException on mid-write tag lost")
         assertTrue(caught!!.message!!.contains("感應斷開"), "Got: ${caught.message}")
         assertTrue(!sim.refreshTriggered, "Must not trigger refresh if write was interrupted")
     }
@@ -245,7 +245,7 @@ object EzSignUnitTest {
     private fun testFmsCosV1DoubledHeight420BWRYDetection() {
         // Real EZ Sign 4.2" 4-color BWRY tag (UID=4E20CF1D) reports rawHeight=600, rawWidth=400, colorCode=0x20 in Tag 0xA0
         val sim = SimulatedIsoDepTransceiver(mode = SimulatedIsoDepTransceiver.MODE_SUCCESS_420_BWRY_COSV1)
-        val cfg = EzSignProtocol.executeDynamicUpdate(
+        val cfg = TapInkProtocol.executeDynamicUpdate(
             transceiver = sim,
             refreshInitialWaitMs = 1L,
             refreshPollIntervalMs = 1L,
@@ -266,7 +266,7 @@ object EzSignUnitTest {
     fun main(args: Array<String>) {
         LogManager.androidLogEnabled = false
         println("============================================================")
-        println("  EZ SIGN DYNAMIC NFC UPDATER - JVM UNIT TEST SUITE")
+        println("  TAPINK DYNAMIC NFC UPDATER - JVM UNIT TEST SUITE")
         println("============================================================")
 
         runTest("1. LZO1X Compression & Decompression Round-Trip") { testLzo1xCompressionRoundTrip() }
