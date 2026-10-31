@@ -14,19 +14,19 @@ permissions:
 jobs:
   android-ci:
     name: Build Android APK/AAB & Run JVM Unit Tests (API 35)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Install Android Platform 35, Build-Tools 35.0.0, Kotlin & Bundletool
+      - name: Install Android Platform 35, Build-Tools 35.0.0, Kotlin 2.0.21 & Bundletool
         run: |
           SDK_ROOT="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-/usr/local/lib/android/sdk}}"
           export ANDROID_SDK_ROOT="$SDK_ROOT"
@@ -44,15 +44,10 @@ jobs:
           mkdir -p "$SDK_ROOT/bundletool"
           curl -sSL https://github.com/google/bundletool/releases/download/1.17.2/bundletool-all-1.17.2.jar \
             -o "$SDK_ROOT/bundletool/bundletool.jar"
-          if ! command -v kotlinc >/dev/null 2>&1; then
-            curl -sSL https://github.com/JetBrains/kotlin/releases/download/v1.9.24/kotlin-compiler-1.9.24.zip -o /tmp/kotlin.zip
-            unzip -q /tmp/kotlin.zip -d /tmp
-            echo "KOTLIN_HOME=/tmp/kotlinc" >> $GITHUB_ENV
-          else
-            KOTLIN_BIN="$(readlink -f "$(command -v kotlinc)")"
-            KOTLIN_HOME_DIR="$(dirname "$(dirname "$KOTLIN_BIN")")"
-            echo "KOTLIN_HOME=$KOTLIN_HOME_DIR" >> $GITHUB_ENV
-          fi
+          rm -rf /tmp/kotlinc /tmp/kotlin.zip
+          curl -sSL https://github.com/JetBrains/kotlin/releases/download/v2.0.21/kotlin-compiler-2.0.21.zip -o /tmp/kotlin.zip
+          unzip -q /tmp/kotlin.zip -d /tmp
+          echo "KOTLIN_HOME=/tmp/kotlinc" >> $GITHUB_ENV
 
       - name: Lint Shell & Python Scripts
         run: |
@@ -84,7 +79,7 @@ jobs:
           ./scripts/build-and-test.sh
 
       - name: Upload Release APK & Play Store AAB Artifacts (Internal CI)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: tapink-release-bundles
           path: |
@@ -102,7 +97,7 @@ jobs:
 
       - name: Publish GitHub Release on Version Tag
         if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           body_path: docs/RELEASE_NOTES.md
           files: |
