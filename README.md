@@ -5,10 +5,12 @@
 # TapInk 瞬墨
 
 **一觸瞬墨，隨處分享 — 為無電池 NFC 電子紙打造的極致更新體驗**  
-*The effortless, privacy-first companion for battery-free NFC E-Paper displays.*
+*The effortless, privacy-first Android companion for battery-free NFC E-Paper displays.*
 
-[![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-0A7EA4?style=flat-square)](#支援硬體一覽表)
-[![Privacy](https://img.shields.io/badge/Privacy-100%25%20Offline%20%26%20Zero%20Tracking-2E7D32?style=flat-square)](docs/privacy-policy.md)
+[![Release](https://img.shields.io/badge/Release-v2.4.0-111827?style=flat-square)](https://github.com/dabendan2/tapink/releases/latest)
+[![Download APK](https://img.shields.io/badge/Android_APK-Direct_Download_(745_KB)-2E7D32?style=flat-square&logo=android&logoColor=white)](https://github.com/dabendan2/tapink/releases/latest/download/tapink-release.apk)
+[![Platform](https://img.shields.io/badge/Platform-Android%207.0%2B%20(API%2024--35)-0A7EA4?style=flat-square)](#立即下載安裝-download--install)
+[![Privacy](https://img.shields.io/badge/Privacy-100%25%20Offline%20%26%20Zero%20Tracking-15803D?style=flat-square)](docs/privacy-policy.md)
 [![Localization](https://img.shields.io/badge/Languages-9%20Locales-5C6BC0?style=flat-square)](#全球化多語系支援)
 [![License: MIT](https://img.shields.io/badge/License-MIT-000000?style=flat-square)](LICENSE)
 
@@ -16,11 +18,24 @@
 
 ---
 
-**TapInk 瞬墨** 是一款專為 Android 與 iPhone 設計的原生無電池 NFC 電子紙（Passive NFC E-Paper / E-Ink）影像更新工具。我們將傳統繁瑣的「開啟專用 App ➔ 猜測螢幕型號 ➔ 手動裁切轉檔」流程，重構為 **「系統分享 ➔ 貼靠感應」的 3 秒直覺反射**。無論是個人攝影珍藏、商務電子名片、會議室智慧桌牌或展場資訊卡，皆能以最佳畫質瞬間定格於電子墨水螢幕之上。
+**TapInk 瞬墨** 是一款專為 Android 設計的原生無電池 NFC 電子紙（Passive NFC E-Paper / E-Ink）影像更新工具。我們將傳統繁瑣的「開啟專用 App ➔ 猜測螢幕型號 ➔ 手動裁切轉檔」流程，重構為 **「系統分享 ➔ 貼靠感應」的 3 秒直覺反射**。無論是個人攝影珍藏、商務電子名片、會議室智慧桌牌或展場資訊卡，皆能以最佳畫質瞬間定格於電子墨水螢幕之上。
 
 <div align="center">
   <img src="docs/play-store/feature-graphic-1024x500.png" width="840" alt="TapInk Banner" />
 </div>
+
+---
+
+## 📲 立即下載安裝 (Download & Install)
+
+**一般使用者無需下載原始碼或設定開發環境**，請直接在 Android 手機點擊下方連結下載安裝包（`.apk`）即可使用：
+
+- 👉 **[點此直接下載最新 Android 安裝包 (`tapink-release.apk`, ~745 KB)](https://github.com/dabendan2/tapink/releases/latest/download/tapink-release.apk)**  
+  *(或前往 [GitHub Releases](https://github.com/dabendan2/tapink/releases/latest) 查看版本更新紀錄與 SHA-256 校驗碼)*
+- **系統需求**：Android 7.0 (API 24) 以上，具備 NFC 硬體功能之手機。
+- **3 秒快速上手**：安裝後無需特地開啟主程式——直接在 **Google 相簿、Canva、Figma** 或任何 App 點選系統 **「分享 ➔ 刷入電子紙 (TapInk)」**，將手機背面 NFC 感應區貼靠電子紙數秒即可完成更新並自動收起！（亦可在桌面點擊 `TapInk 電子紙` 圖示選圖，或長按中央預覽卡片 1 秒體驗**無硬體展示模式**）。
+
+> 🔒 **零網路權限安全保證**：您可以在手機「應用程式資訊 ➔ 權限」中親自驗證，TapInk **僅宣告單一 `android.permission.NFC` 權限，完全未申請 `INTERNET`（網路連線）或相簿常駐讀取權限**，從系統底層確保您的私人照片與名片絕不外流。首次由瀏覽器安裝時，若系統跳出未知來源或 Play 安全防護提示，請放心點選「允許安裝 / 仍要安裝」。
 
 ---
 
@@ -35,7 +50,7 @@
 ## 四大核心體驗亮點
 
 ### ⚡ 1. 系統級「分享即刷」3 秒工作流 (Share-to-Ink Workflow)
-無需切換工作脈絡。在 **Google 相簿、Apple 照片、Canva、Figma** 或任何設計 App 中準備好畫面，直接點擊系統「分享 (Share)」並選擇 **「刷入電子紙 (TapInk)」**，底部感應面板即刻滑出；貼靠電子紙完成更新後自動收起，行雲流水。
+無需切換工作脈絡。在 **Google 相簿、Canva、Figma** 或任何設計 App 中準備好畫面，直接點擊系統「分享 (Share)」並選擇 **「刷入電子紙 (TapInk)」**，底部感應面板即刻滑出；貼靠電子紙完成更新後自動收起，行雲流水。
 
 ### 🎯 2. 免設定全自動硬體識別 (Zero-Setup Auto-Detection)
 告別在冗長清單中盲猜型號的困擾。手機貼靠瞬間，TapInk 自動識別電子紙的螢幕尺寸、解析度與色彩模式（黑白雙色、黑白紅三色、黑白紅黃四色），智慧完成畫面比例裁切與直橫向適配。
@@ -65,7 +80,7 @@ TapInk 支援市面上主流採用無源 NFC 供電與通訊之電子紙顯示�
 
 ## 全球化多語系支援
 
-雙平台原生內建 9 種語言介面，隨系統語言自動切換：
+原生內建 9 種語言介面，隨 Android 系統語言自動切換：
 - **繁體中文**（台灣 `zh-TW` / 香港 `zh-HK`）
 - **English** (`en`)
 - **日本語** (`ja`)
@@ -77,26 +92,24 @@ TapInk 支援市面上主流採用無源 NFC 供電與通訊之電子紙顯示�
 
 ---
 
-## 開發者快速開始 (Quick Start for Developers)
+## 開發者專區：從原始碼建置 (For Developers)
 
-本專案包含 Android 原生客戶端（`android/app`）與 iOS 原生客戶端（`ios/`），並配備完整的自動化測試套件。
+<details>
+<summary><b>點擊展開：開發環境需求、建置指令與模擬器 E2E 驗證（一般使用者無需閱讀）</b></summary>
+<br />
+
+本專案為純淨原生 Android 客戶端（`android/app`），配備完整的 JVM 單元測試與模擬器端對端（E2E）自動化測試套件。
 
 ### 環境需求
-- **Android**：JDK 17+、Android SDK (API 35)、Kotlin Compiler
-- **iOS**：Swift 5.9+（macOS 完整建置需 Xcode 15+ 與 XcodeGen）
+- **JDK 17+**
+- **Android SDK (API 35)** 與 Build-Tools `35.0.0`
+- **Kotlin Compiler (`kotlinc`)**
 
 ### 常用建置與驗證指令
 
 ```bash
-# 執行完整跨平台建置與單元測試（Android APK/AAB 編譯 + JVM 測試 + iOS Swift 核心測試）
+# 執行完整建置與單元測試（Android APK/AAB 編譯 + JVM 9 大單元測試套件 + Bundletool 驗證）
 npm test
-
-# 單獨執行 iOS 核心模組單元測試
-npm run test:ios
-
-# 在 macOS 產生 Xcode 專案並編譯 iOS App 與系統分享擴充功能
-cd ios && xcodegen generate
-xcodebuild -project TapInk.xcodeproj -scheme TapInkApp -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build
 
 # 執行 Android 模擬器自動化端對端 (E2E) 驗證與截圖生成
 npm run test:e2e
@@ -108,12 +121,12 @@ npm run deploy:device
 ### 無硬體展示模式 (Demo Mode for Reviewers)
 若在無實體 NFC 電子紙的環境下進行測試或商店審核，只需啟動 App 並**長按中央的電子紙預覽卡片 1 秒**，即可觸發內建的「無硬體展示模式」，完整體驗 4.2 吋四色電子紙的渲染轉換與更新進度動畫。
 
+</details>
+
 ---
 
 ## 相關文件與法務聲明
 
 - [隱私權政策 (Privacy Policy)](docs/privacy-policy.md)
-- [Google Play 商店商品詳情 (Play Store Listing)](docs/play-store/store-listing.md)
-- [Apple App Store 商品詳情 (App Store Listing)](docs/app-store/store-listing.md)
 - **商標聲明**：TapInk 為獨立開發之第三方應用程式，與 Santek、EZ Sign 或其他硬體製造商無官方隸屬或授權關係。文中提及之品牌與名稱僅用於說明硬體相容性。
 - **開源授權**：本專案採用 [MIT License](LICENSE) 授權。

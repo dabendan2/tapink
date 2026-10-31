@@ -1,4 +1,0 @@
-/* Localized Info.plist keys */
-"CFBundleDisplayName" = "TapInk 電子紙";
-"CFBundleName" = "TapInk 電子紙";
-"NFCReaderUsageDescription" = "請將 iPhone 背面頂端（鏡頭旁）貼平電子紙中央以進行 NFC 無線供電與刷圖（建議除下厚保護殼）。";

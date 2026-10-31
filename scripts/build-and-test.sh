@@ -9,7 +9,6 @@ SRC_DIR="$APP_DIR/src/main/kotlin"
 TEST_DIR="$APP_DIR/src/test/kotlin"
 RES_DIR="$APP_DIR/src/main/res"
 MANIFEST="$APP_DIR/src/main/AndroidManifest.xml"
-IOS_DIR="$PROJECT_DIR/ios"
 
 DEBUG_KEYSTORE="${DEBUG_KEYSTORE:-/home/ubuntu/tesla_wearable/keys/debug.keystore}"
 RELEASE_KEYSTORE="${RELEASE_KEYSTORE:-$PROJECT_DIR/keys/release.jks}"
@@ -47,6 +46,10 @@ if [ ! -f "$DEBUG_KEYSTORE" ]; then
 fi
 
 if [ ! -f "$RELEASE_KEYSTORE" ]; then
+    if [[ "${GITHUB_REF:-}" == refs/tags/v* ]] || [ "${REQUIRE_RELEASE_KEYSTORE:-0}" = "1" ]; then
+        echo "[ERROR] Official release build requires a persistent release keystore ($RELEASE_KEYSTORE). Refusing to generate an ephemeral keystore!"
+        exit 1
+    fi
     keytool -genkeypair -v \
         -keystore "$RELEASE_KEYSTORE" \
         -storetype PKCS12 \
@@ -56,13 +59,13 @@ if [ ! -f "$RELEASE_KEYSTORE" ]; then
         -dname "CN=Dabendan, OU=Mobile, O=Dabendan, L=Taipei, ST=Taiwan, C=TW" >/dev/null 2>&1
 fi
 
-echo "=== [1/7] Cleaning & Preparing Build Directories ==="
+echo "=== [1/6] Cleaning & Preparing Build Directories ==="
 rm -rf "$BUILD_DIR"
 mkdir -p "$BUILD_DIR/classes" "$BUILD_DIR/test-classes" "$BUILD_DIR/dex" "$BUILD_DIR/gen" "$BUILD_DIR/bundle-proto" "$BUILD_DIR/base-module"
 
 CLASSPATH="$ANDROID_JAR:$KOTLIN_STDLIB"
 
-echo "=== [2/7] Compiling TapInk Android Resources & Kotlin Sources (API 35, -Werror) ==="
+echo "=== [2/6] Compiling TapInk Android Resources & Kotlin Sources (API 35, -Werror) ==="
 "$BUILD_TOOLS/aapt2" compile \
     --dir "$RES_DIR" \
     -o "$BUILD_DIR/res.zip"
@@ -86,14 +89,14 @@ echo "=== [2/7] Compiling TapInk Android Resources & Kotlin Sources (API 35, -We
     "$SRC_DIR/com/dabendan/tapink/TapInkProtocol.kt" \
     "$SRC_DIR/com/dabendan/tapink/ShareNfcActivity.kt"
 
-echo "=== [3/7] Compiling & Executing Android JVM Unit Tests (-Werror) ==="
+echo "=== [3/6] Compiling & Executing Android JVM Unit Tests (-Werror) ==="
 "$KOTLINC" -Werror -cp "$CLASSPATH:$BUILD_DIR/classes" \
     -d "$BUILD_DIR/test-classes" \
     "$TEST_DIR/com/dabendan/tapink/TapInkUnitTest.kt"
 
 java -cp "$CLASSPATH:$BUILD_DIR/classes:$BUILD_DIR/test-classes" com.dabendan.tapink.TapInkUnitTest
 
-echo "=== [4/7] Running D8 DEXer & Packaging APK ==="
+echo "=== [4/6] Running D8 DEXer & Packaging APK ==="
 find "$BUILD_DIR/classes" -name "*.class" > "$BUILD_DIR/class_list.txt"
 "$BUILD_TOOLS/d8" --min-api 24 --output "$BUILD_DIR/dex" --lib "$ANDROID_JAR" "$KOTLIN_STDLIB" @"$BUILD_DIR/class_list.txt"
 
@@ -108,7 +111,7 @@ with zipfile.ZipFile(apk_path, 'a', compression=zipfile.ZIP_DEFLATED) as zf:
             zf.write(full_path, f)
 "
 
-echo "=== [5/7] Zipalign & Signing APK (Debug + Release) ==="
+echo "=== [5/6] Zipalign & Signing APK (Debug + Release) ==="
 "$BUILD_TOOLS/zipalign" -p -f 4 "$BUILD_DIR/unsigned.apk" "$BUILD_DIR/aligned.apk"
 
 # 1. Debug-signed APK (preserves existing signature for seamless adb install -r on local devices/emulators)
@@ -127,7 +130,7 @@ echo "=== [5/7] Zipalign & Signing APK (Debug + Release) ==="
     --out "$BUILD_DIR/tapink-release.apk" \
     "$BUILD_DIR/aligned.apk"
 
-echo "=== [6/7] Packaging & Signing Google Play Store App Bundle (.aab) ==="
+echo "=== [6/6] Packaging & Signing Google Play Store App Bundle (.aab) ==="
 "$BUILD_TOOLS/aapt2" link \
     --proto-format \
     --auto-add-overlay \
@@ -180,14 +183,7 @@ jarsigner \
 
 java -jar "$BUNDLETOOL_JAR" validate --bundle="$AAB_RELEASE"
 
-echo "=== [7/7] Compiling & Executing iOS TapInkCore Swift Package Unit Tests (swift test) ==="
-if command -v swift >/dev/null 2>&1; then
-    (cd "$IOS_DIR" && swift test)
-else
-    echo "[WARN] swift binary not found in PATH; skipping iOS Swift unit tests."
-fi
-
-echo "=== Cross-Platform Build, Android JVM + iOS Swift Unit Tests & Play Store AAB Validation Completed Successfully ==="
+echo "=== Android Build, JVM Unit Tests & Play Store AAB Validation Completed Successfully ==="
 ls -lh "$BUILD_DIR/tapink.apk" "$BUILD_DIR/tapink-release.apk" "$AAB_RELEASE"
 
 for arg in "$@"; do

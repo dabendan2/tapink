@@ -3,12 +3,11 @@
   "version": "2.4.0",
   "private": true,
   "license": "MIT",
-  "description": "TapInk (瞬墨): Effortless, 100% offline NFC E-Paper & smart badge updater for Android and iOS.",
+  "description": "TapInk (瞬墨): Effortless, 100% offline NFC E-Paper & smart badge updater for Android.",
   "scripts": {
     "prepare": "husky",
     "build": "bash ./scripts/build-and-test.sh",
     "test": "bash ./scripts/build-and-test.sh",
-    "test:ios": "cd ./ios && swift test",
     "test:e2e": "bash ./scripts/build-and-test.sh --e2e-emulator",
     "assets:store": "python3 ./scripts/generate-store-assets.py",
     "lint": "python3 -m py_compile tests/emulator-e2e.test.py scripts/generate-store-assets.py && bash -n scripts/build-and-test.sh",

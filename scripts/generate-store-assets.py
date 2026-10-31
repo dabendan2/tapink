@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
 """
-Generates Google Play Store & Apple App Store mandatory graphic assets for TapInk (瞬墨):
+Generates Google Play Store mandatory graphic assets for TapInk (瞬墨):
 - docs/play-store/icon-512.png (512x512 32-bit PNG, rendered with 4x supersampling)
 - docs/play-store/feature-graphic-1024x500.png (1024x500 24-bit RGB PNG, rendered with 2x supersampling)
-- ios/Resources/Assets.xcassets/AppIcon.appiconset/icon-1024.png (1024x1024 24-bit RGB PNG without alpha channel)
-- ios/Resources/Assets.xcassets/AppIcon.appiconset/Contents.json
-- ios/Resources/Assets.xcassets/Contents.json
 
 Visual Spec (Blank-Slate Product Director Design):
 - Brand: TapInk 瞬墨 (TapInk: NFC E-Paper & E-Ink)
@@ -18,17 +15,13 @@ Visual Spec (Blank-Slate Product Director Design):
   - E-Paper Amber Yellow: #F2B705
 """
 
-import json
 import math
 import os
 from PIL import Image, ImageDraw, ImageFont
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT_DIR = os.path.join(PROJECT_DIR, "docs", "play-store")
-IOS_XCASSETS_DIR = os.path.join(PROJECT_DIR, "ios", "Resources", "Assets.xcassets")
-IOS_APPICONSET_DIR = os.path.join(IOS_XCASSETS_DIR, "AppIcon.appiconset")
 os.makedirs(OUT_DIR, exist_ok=True)
-os.makedirs(IOS_APPICONSET_DIR, exist_ok=True)
 
 # Brand Palette
 COL_BG_TOP = (30, 34, 41)        # #1E2229
@@ -169,46 +162,11 @@ def render_master_icon_2048():
 def generate_icons():
     master_img = render_master_icon_2048()
 
-    # 1. Google Play Store 512x512 PNG
+    # Google Play Store 512x512 PNG
     icon_512 = master_img.resize((512, 512), Image.Resampling.LANCZOS)
     play_path = os.path.join(OUT_DIR, "icon-512.png")
     icon_512.save(play_path, "PNG")
     print(f"[OK] Generated {play_path} (512x512)")
-
-    # 2. Apple App Store 1024x1024 RGB PNG (strictly no alpha channel per App Store Connect requirement)
-    icon_1024_rgb = master_img.resize((1024, 1024), Image.Resampling.LANCZOS).convert("RGB")
-    ios_icon_path = os.path.join(IOS_APPICONSET_DIR, "icon-1024.png")
-    icon_1024_rgb.save(ios_icon_path, "PNG")
-    print(f"[OK] Generated {ios_icon_path} (1024x1024 RGB, no alpha)")
-
-    # 3. Assets.xcassets Contents.json & AppIcon.appiconset Contents.json
-    xcassets_root_json = {
-        "info": {
-            "author": "xcode",
-            "version": 1
-        }
-    }
-    with open(os.path.join(IOS_XCASSETS_DIR, "Contents.json"), "w", encoding="utf-8") as f:
-        json.dump(xcassets_root_json, f, indent=2)
-        f.write("\n")
-
-    appicon_contents_json = {
-        "images": [
-            {
-                "filename": "icon-1024.png",
-                "idiom": "universal",
-                "platform": "ios",
-                "size": "1024x1024"
-            }
-        ],
-        "info": {
-            "author": "xcode",
-            "version": 1
-        }
-    }
-    with open(os.path.join(IOS_APPICONSET_DIR, "Contents.json"), "w", encoding="utf-8") as f:
-        json.dump(appicon_contents_json, f, indent=2)
-        f.write("\n")
 
     return icon_512
 

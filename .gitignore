@@ -9,23 +9,13 @@ build/
 *.dex
 *.class
 
-# iOS / SwiftPM / Xcode Build Artifacts
-ios/.build/
-ios/.swiftpm/
-ios/TapInk.xcodeproj/
-DerivedData/
-*.ipa
-*.dSYM.zip
-*.dSYM
-
-# Signing Keys & Credentials (Never commit private keystores or provisioning profiles)
+# Signing Keys & Credentials (Never commit private keystores)
 keys/*.jks
 keys/*.keystore
 keys/*.p12
 keys/*.pem
 *.jks
 *.keystore
-*.mobileprovision
 
 # Node / Husky
 node_modules/

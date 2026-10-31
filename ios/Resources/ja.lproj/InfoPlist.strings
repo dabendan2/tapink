@@ -1,4 +1,0 @@
-/* Localized Info.plist keys */
-"CFBundleDisplayName" = "TapInk 電子ペーパー";
-"CFBundleName" = "TapInk 電子ペーパー";
-"NFCReaderUsageDescription" = "電子ペーパーへ給電および画像転送を行うため、iPhoneの背面最上部を電子ペーパーの中央にかざしてください（厚いケースは外してください）。";

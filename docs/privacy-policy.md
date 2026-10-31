@@ -2,7 +2,7 @@
 
 **生效日期 / Effective Date:** 2026 年 10 月 31 日 (October 31, 2026)  
 **最後更新 / Last Updated:** 2026 年 10 月 31 日 (October 31, 2026)  
-**適用產品 / Applicable Product:** TapInk 瞬墨 (Android & iOS, Bundle ID / Package Name: `com.dabendan.tapink`)
+**適用產品 / Applicable Product:** TapInk 瞬墨 (Android, Package Name: `com.dabendan.tapink`)
 
 ---
 
@@ -12,7 +12,7 @@
 **TapInk 瞬墨**（以下簡稱「本應用程式」）深知個人隱私與企業資訊安全的重要性。本應用程式在架構設計上採用 **「100% 純離線本地端運作 (Offline-First by Design)」** 原則。**我們不會收集、儲存、傳送、分析或向任何第三方分享您的任何個人資料、相片內容、裝置識別碼或使用行為紀錄。**
 
 ### 2. 零資料收集與零網路傳輸保證
-- **無網路連線功能**：本應用程式不包含任何網路連線功能（Android 版本未申請系統網路權限；iOS 版本不發起任何外部網路請求）。
+- **無網路連線功能**：本應用程式不包含任何網路連線功能，且未申請系統網路權限（`android.permission.INTERNET`）。
 - **無帳號與雲端服務**：使用本應用程式無須註冊帳號，亦不存在任何遠端伺服器接收您的資料。
 
 ### 3. 相片與媒體處理方式
@@ -40,7 +40,7 @@
 **TapInk** ("the App") is built from the ground up with a strict **100% Offline-First by Design** architecture. **We do not collect, store, transmit, analyze, or share any of your personal data, photos, device identifiers, or usage history.**
 
 ### 2. Zero Data Collection & Zero Network Access
-- **No Internet Connectivity:** The App operates entirely offline. The Android version does not request network permissions, and the iOS version makes zero network requests.
+- **No Internet Connectivity:** The App operates entirely offline and does not request network permissions (`android.permission.INTERNET`).
 - **No Accounts or Cloud Storage:** The App requires no user registration and operates without any backend servers.
 
 ### 3. Photo and Media Processing

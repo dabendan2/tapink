@@ -1,4 +1,0 @@
-/* Localized Info.plist keys */
-"CFBundleDisplayName" = "TapInk NFC";
-"CFBundleName" = "TapInk NFC";
-"NFCReaderUsageDescription" = "Hold the top back of your iPhone steady against the NFC E-Paper display to provide wireless power and transfer the image. Remove thick or metal cases if needed.";
