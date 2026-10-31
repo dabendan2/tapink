@@ -182,9 +182,10 @@ jarsigner \
     "$RELEASE_KEY_ALIAS" >/dev/null
 
 java -jar "$BUNDLETOOL_JAR" validate --bundle="$AAB_RELEASE"
+(cd "$BUILD_DIR" && sha256sum tapink-release.apk > SHA256SUMS.txt)
 
 echo "=== Android Build, JVM Unit Tests & Play Store AAB Validation Completed Successfully ==="
-ls -lh "$BUILD_DIR/tapink.apk" "$BUILD_DIR/tapink-release.apk" "$AAB_RELEASE"
+ls -lh "$BUILD_DIR/tapink.apk" "$BUILD_DIR/tapink-release.apk" "$AAB_RELEASE" "$BUILD_DIR/SHA256SUMS.txt"
 
 for arg in "$@"; do
     case "$arg" in
