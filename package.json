@@ -4,6 +4,37 @@
   "private": true,
   "license": "MIT",
   "description": "TapInk (瞬墨): Effortless, 100% offline NFC E-Paper & smart badge updater for Android.",
+  "keywords": [
+    "nfc",
+    "e-paper",
+    "e-ink",
+    "epaper",
+    "eink",
+    "smart-badge",
+    "digital-business-card",
+    "desk-sign",
+    "santek",
+    "ez-sign",
+    "spectra-6",
+    "floyd-steinberg",
+    "android",
+    "offline-first",
+    "passive-nfc",
+    "battery-free",
+    "obtainium",
+    "電子紙",
+    "智慧識別證",
+    "數位名片",
+    "會議桌牌"
+  ],
+  "homepage": "https://github.com/dabendan2/tapink#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dabendan2/tapink.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dabendan2/tapink/issues"
+  },
   "scripts": {
     "prepare": "husky",
     "build": "bash ./scripts/build-and-test.sh",

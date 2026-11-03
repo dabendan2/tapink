@@ -4,15 +4,18 @@ End-to-End (E2E) Android Emulator Verification & Screenshot Suite for TapInk Dyn
 (Blank-Slate Google Pixel Material Design 3 Modal Bottom Sheet Consumer UX).
 """
 
+import hashlib
+import math
 import os
 import re
 import sys
-import math
 import time
+import json
 import struct
 import zlib
 import subprocess
 import xml.etree.ElementTree as ET
+from PIL import Image
 
 ANDROID_SDK = "/home/ubuntu/android-sdk"
 EMULATOR_BIN = f"{ANDROID_SDK}/emulator/emulator"
@@ -211,10 +214,174 @@ def wait_for_service_state(expected_state, timeout=15):
     raise AssertionError(f"Timed out waiting for service state '{expected_state}'. Current dump:\n{get_service_dumpsys()}")
 
 
+def verify_targeted_refinement_contracts():
+    """
+    White-Box Closed-Loop Contract Verification for Targeted Incremental Refinement:
+    - I1: Zero Tracked App Diff in android/ & Zero Diff on frozen docs (store-listing, RELEASE_NOTES, privacy-policy)
+    - I2: README.md prose preservation + Multi-language README.en.md / README.ja.md + Obtainium badge + 6 <img> alt/title SEO attributes + package.json keywords
+    - I3: Feature Graphic (1024x500) & Social Preview (1280x640) exact 4-color Floyd-Steinberg dithered artwork & safe zone
+    - I4: Screenshot Sandwich Layer Preservation, zero legacy magenta backdrop in scrim/corner zone, and strict bit-exact idempotency
+    """
+    print("\n[CONTRACT QA] Running Targeted Incremental Refinement & Asset Closed-Loop Assertions...")
+
+    # 1. I1: Frozen core git status / diff checks
+    out_android, _, _ = run_cmd("git status --porcelain --untracked-files=no android/", check=True)
+    assert out_android == "", f"I1 VIOLATION: android/ must have zero tracked modifications, got:\n{out_android}"
+
+    out_docs, _, _ = run_cmd(
+        "git diff docs/play-store/store-listing.md docs/RELEASE_NOTES.md docs/privacy-policy.md",
+        check=True,
+    )
+    assert out_docs == "", f"I2 VIOLATION: Frozen docs must have zero diff, got:\n{out_docs}"
+
+    # 2. I2: package.json SEO metadata & Obtainium keyword contract
+    pkg_path = os.path.join(PROJECT_DIR, "package.json")
+    with open(pkg_path, "r", encoding="utf-8") as f:
+        pkg = json.load(f)
+    expected_keywords = {
+        "nfc", "e-paper", "e-ink", "epaper", "eink", "smart-badge",
+        "digital-business-card", "desk-sign", "santek", "ez-sign",
+        "spectra-6", "floyd-steinberg", "android", "offline-first",
+        "passive-nfc", "battery-free", "obtainium",
+        "電子紙", "智慧識別證", "數位名片", "會議桌牌",
+    }
+    actual_keywords = set(pkg.get("keywords", []))
+    missing_kw = expected_keywords - actual_keywords
+    assert not missing_kw, f"package.json missing required SEO keywords: {missing_kw}"
+    assert pkg.get("homepage") == "https://github.com/dabendan2/tapink#readme", "Unexpected homepage in package.json"
+    assert pkg.get("repository", {}).get("url") == "git+https://github.com/dabendan2/tapink.git", "Unexpected repository.url"
+
+    # 3. I2: Multi-locale READMEs (README.md, README.en.md, README.ja.md), Obtainium badge, and 6 <img> alt/title attributes
+    obtainium_url = "https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/dabendan2/tapink"
+    expected_imgs = [
+        "docs/play-store/icon-512.png",
+        "docs/play-store/feature-graphic-1024x500.png",
+        "docs/screenshots/01-waiting-nfc.png",
+        "docs/screenshots/03-transferring-290bw.png",
+        "docs/screenshots/04-transferring-420bwry.png",
+        "docs/screenshots/02-error-retry.png",
+    ]
+    for rname in ("README.md", "README.en.md", "README.ja.md"):
+        rpath = os.path.join(PROJECT_DIR, rname)
+        assert os.path.exists(rpath), f"Missing multi-locale README: {rname}"
+        with open(rpath, "r", encoding="utf-8") as f:
+            content = f.read()
+        assert obtainium_url in content, f"{rname} missing Obtainium one-click tracking URL"
+        assert "<!--" not in content, f"{rname} must not contain HTML comments"
+        # Check language switcher bar links
+        for target_readme in ("README.md", "README.en.md", "README.ja.md"):
+            if target_readme != rname:
+                assert f"]({target_readme})" in content, f"{rname} missing switcher link to {target_readme}"
+        # Check all 6 <img> tags have non-trivial alt and title attributes
+        img_tags = re.findall(r"<img\s+[^>]+>", content)
+        assert len(img_tags) == 6, f"{rname} expected 6 <img> tags, found {len(img_tags)}"
+        for idx, tag in enumerate(img_tags):
+            assert expected_imgs[idx] in tag, f"{rname} img #{idx+1} missing src {expected_imgs[idx]}: {tag}"
+            alt_m = re.search(r'alt="([^"]+)"', tag)
+            title_m = re.search(r'title="([^"]+)"', tag)
+            assert alt_m and len(alt_m.group(1)) >= 15, f"{rname} img #{idx+1} has weak/missing alt: {tag}"
+            assert title_m and len(title_m.group(1)) >= 10, f"{rname} img #{idx+1} has weak/missing title: {tag}"
+
+    # Verify README.md diff only touches the allowed lines (language bar, Obtainium badge, and 6 <img> tags)
+    diff_readme, _, _ = run_cmd("git diff -U0 README.md", check=True)
+    for line in diff_readme.splitlines():
+        if line.startswith(("+++", "---", "@@", "diff ", "index ")):
+            continue
+        if line.startswith(("+", "-")):
+            body = line[1:].strip()
+            if body == "":
+                continue
+            allowed = (
+                "<img " in body
+                or "Obtainium" in body
+                or ("README.en.md" in body and "README.ja.md" in body)
+            )
+            assert allowed, f"I2 VIOLATION: Unauthorized prose modification in README.md diff: {line}"
+
+    # 4. I3 & I4: Graphic Asset Dimensions, 1:1 Dithered Palette Purity, Scrim Cleanliness & Strict Idempotency
+    gen_script = os.path.join(PROJECT_DIR, "scripts", "generate-store-assets.py")
+    run_cmd(f"python3 {gen_script}", timeout=60, check=True)
+
+    tracked_assets = [
+        os.path.join(PROJECT_DIR, "docs", "play-store", "icon-512.png"),
+        os.path.join(PROJECT_DIR, "docs", "play-store", "feature-graphic-1024x500.png"),
+        os.path.join(PROJECT_DIR, "docs", "play-store", "social-preview-1280x640.png"),
+        os.path.join(SCREENSHOT_DIR, "01-waiting-nfc.png"),
+        os.path.join(SCREENSHOT_DIR, "02-error-retry.png"),
+        os.path.join(SCREENSHOT_DIR, "03-transferring-290bw.png"),
+        os.path.join(SCREENSHOT_DIR, "04-transferring-420bwry.png"),
+    ]
+    hashes_pass1 = {}
+    for ap in tracked_assets:
+        with open(ap, "rb") as f:
+            hashes_pass1[ap] = hashlib.sha256(f.read()).hexdigest()
+
+    # Run a second time to verify strict bit-exact idempotency
+    run_cmd(f"python3 {gen_script}", timeout=60, check=True)
+    for ap in tracked_assets:
+        with open(ap, "rb") as f:
+            h2 = hashlib.sha256(f.read()).hexdigest()
+        assert hashes_pass1[ap] == h2, f"I4 IDEMPOTENCY VIOLATION: {ap} changed on second run!"
+
+    # Verify Feature Graphic & Social Preview dimensions & 1:1 4-color dithered region
+    brand_4color_palette = {
+        (28, 30, 33),     # Carbon Black #1C1E21
+        (246, 244, 238),  # Warm Ivory #F6F4EE
+        (242, 183, 5),    # Amber Yellow #F2B705
+        (217, 56, 41),    # Crimson Red #D93829
+    }
+    for bname, exp_size, ox, oy in [
+        ("feature-graphic-1024x500.png", (1024, 500), 0, 0),
+        ("social-preview-1280x640.png", (1280, 640), 128, 70),
+    ]:
+        bpath = os.path.join(PROJECT_DIR, "docs", "play-store", bname)
+        bimg = Image.open(bpath).convert("RGB")
+        assert bimg.size == exp_size and bimg.mode == "RGB", f"{bname} invalid size/mode: {bimg.size} {bimg.mode}"
+        bpix = bimg.load()
+        assert bpix is not None
+        # Sample unoccluded upper-right dithered sun/mountain region inside E-Paper screen:
+        # logical X in [780..920], logical Y in [115..340]
+        seen_colors = set()
+        for sy in range(oy + 115, oy + 340):
+            for sx in range(ox + 780, ox + 920):
+                c = bpix[sx, sy]
+                assert c in brand_4color_palette, (
+                    f"I3 MOIRE/RESAMPLING VIOLATION in {bname} at ({sx},{sy}): pixel {c} is not in exact 4-color E-Paper palette!"
+                )
+                seen_colors.add(c)
+        assert len(seen_colors) == 4, f"{bname} dithered artwork must utilize all 4 brand E-Paper colors, got {seen_colors}"
+
+    # Verify Screenshots 01~04 dimensions, top status bar, bottom sheet preservation, and zero magenta in scrim/corner zone
+    for sname, exp_y_top in [
+        ("01-waiting-nfc.png", 1205),
+        ("02-error-retry.png", 1205),
+        ("03-transferring-290bw.png", 1352),
+        ("04-transferring-420bwry.png", 1352),
+    ]:
+        spath = os.path.join(SCREENSHOT_DIR, sname)
+        simg = Image.open(spath).convert("RGB")
+        assert simg.size == (1080, 2400), f"{sname} invalid size {simg.size}"
+        assert simg.getpixel((540, 0)) == (0, 0, 0) and simg.getpixel((540, 62)) == (0, 0, 0), f"{sname} status bar not preserved"
+        assert simg.getpixel((540, exp_y_top)) == (25, 28, 32), f"{sname} expected sheet top at Y={exp_y_top}, got {simg.getpixel((540, exp_y_top))}"
+        raw_rgb = simg.crop((0, 0, 1080, exp_y_top + 70)).tobytes()
+        mag_scrim = sum(
+            1
+            for idx in range(0, len(raw_rgb), 3)
+            if (raw_rgb[idx] - raw_rgb[idx + 1] > 25 and raw_rgb[idx + 2] > 90)
+        )
+        assert mag_scrim == 0, f"I4 VIOLATION: {sname} has {mag_scrim} legacy magenta pixels in scrim/corner region!"
+
+    print(" -> [PASS] All Targeted Incremental Refinement (I1~I4), Multi-Locale README, Obtainium & Pixel Idempotency Contracts Verified!")
+
+
 def main():
     print("======================================================================")
     print("  TAPINK DYNAMIC NFC UPDATER - BLANK-SLATE M3 BOTTOM SHEET E2E SUITE")
     print("======================================================================")
+
+    verify_targeted_refinement_contracts()
+    if "--contracts-only" in sys.argv:
+        return
 
     ensure_emulator_booted()
 
@@ -321,6 +488,9 @@ def main():
     time.sleep(1.5)
     assert not is_share_activity_resumed(), "Activity must auto-close after 4.2\" update!"
     print(" -> [PASS] 4.2\" 400x300 4-color auto-detected, transferred (30,000B), and Activity auto-closed!")
+
+    print("\n[STEP 6] Refining Screenshot Modal Scrim Backdrops via generate-store-assets.py...")
+    run_cmd(f"python3 {os.path.join(PROJECT_DIR, 'scripts', 'generate-store-assets.py')}", timeout=60, check=True)
 
     print("\n======================================================================")
     print("  [✓] ALL BLANK-SLATE M3 BOTTOM SHEET E2E SCENARIOS PASSED!")

@@ -1,8 +1,10 @@
 <div align="center">
 
-<img src="docs/play-store/icon-512.png" width="112" height="112" alt="TapInk Logo" />
+<img src="docs/play-store/icon-512.png" width="112" height="112" alt="TapInk 瞬墨 - Android 無電池 NFC 電子紙與智慧識別證更新工具圖示" title="TapInk 瞬墨 - Android 離線無電池 NFC 電子紙更新工具" />
 
 # TapInk 瞬墨
+
+繁體中文 | [English](README.en.md) | [日本語](README.ja.md)
 
 **從相簿按下分享，手機貼靠即完成更新。**  
 **無需手動設定尺寸，在無電池 NFC 電子紙上呈現清晰銳利的色彩與細節。**
@@ -10,6 +12,7 @@
 *Update battery-free NFC E-Paper displays directly from Android's share sheet—100% offline.*
 
 [![Download APK](https://img.shields.io/badge/下載_Android_安裝包-tapink--release.apk_(840_KB)-0B57D0?style=for-the-badge&logo=android&logoColor=white)](https://github.com/dabendan2/tapink/releases/latest/download/tapink-release.apk)
+[![Obtainium](https://img.shields.io/badge/Obtainium-一鍵加入更新追蹤-5A32A3?style=for-the-badge&logo=android&logoColor=white)](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/dabendan2/tapink)
 
 [![Release](https://img.shields.io/badge/版本-v2.4.0-1F1F1F?style=flat-square)](https://github.com/dabendan2/tapink/releases/latest)
 [![Platform](https://img.shields.io/badge/系統需求-Android%207.0%20~%2015%2B-00639B?style=flat-square)](#下載與安裝-download--install)
@@ -25,7 +28,7 @@
 系統會在感應瞬間自動辨識面板尺寸與色彩規格，並針對反射式電子墨水最佳化人像漸層、文字與 QR Code 清晰度。全數影像處理皆於手機本機端完成，不需設定、不需連網。
 
 <div align="center">
-  <img src="docs/play-store/feature-graphic-1024x500.png" width="840" alt="TapInk Banner" />
+  <img src="docs/play-store/feature-graphic-1024x500.png" width="840" alt="TapInk 瞬墨 - 相簿分享一觸秒刷無電池 NFC 電子紙桌牌與數位名片 (支援雙色/三色/四色/Spectra 6 抖動)" title="TapInk 瞬墨 - 相簿分享一觸秒刷無電池 NFC 電子紙桌牌與名片" />
 </div>
 
 ---
@@ -49,7 +52,7 @@
 
 | 1. 準備感應與即時預覽 | 2. 黑白雙色快速刷新 | 3. 四色電子墨水色彩抖動 | 4. 中斷保護與原位重試 |
 | :---: | :---: | :---: | :---: |
-| <img src="docs/screenshots/01-waiting-nfc.png" width="200" alt="Waiting NFC" /> | <img src="docs/screenshots/03-transferring-290bw.png" width="200" alt="2.9 BW Transfer" /> | <img src="docs/screenshots/04-transferring-420bwry.png" width="200" alt="4.2 BWRY Transfer" /> | <img src="docs/screenshots/02-error-retry.png" width="200" alt="Error Retry" /> |
+| <img src="docs/screenshots/01-waiting-nfc.png" width="200" alt="TapInk 系統分享選單底部感應面板：準備更新無電池 NFC 電子紙與即時畫面預覽" title="準備感應與即時預覽 (Android 系統分享底部抽屜)" /> | <img src="docs/screenshots/03-transferring-290bw.png" width="200" alt="TapInk 自動識別 2.9 吋 (296×128) 黑白雙色 NFC 電子紙識別證並快速刷新" title="2.9 吋黑白雙色電子紙智慧識別證快速刷新" /> | <img src="docs/screenshots/04-transferring-420bwry.png" width="200" alt="TapInk 自動識別 4.2 吋 (400×300) 黑白紅黃四色 BWRY NFC 電子紙桌牌與 Floyd-Steinberg 色彩抖動傳輸" title="4.2 吋四色 BWRY 電子紙桌牌色彩抖動與刷新" /> | <img src="docs/screenshots/02-error-retry.png" width="200" alt="TapInk NFC 感應中斷保護與重新貼靠電子紙原位無縫續刷" title="NFC 感應中斷保護與原位無縫重試" /> |
 
 ---
 
