@@ -17,9 +17,11 @@ Visual Spec (Targeted Incremental Refinement on Approved Brand Baseline):
   - E-Paper Amber Yellow: #F2B705
 """
 
+import base64
 import math
 import os
-from PIL import Image, ImageDraw, ImageFont
+import zlib
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT_DIR = os.path.join(PROJECT_DIR, "docs", "play-store")
@@ -631,67 +633,74 @@ def generate_feature_and_social_graphics(icon_img):
     print(f"[OK] Generated {social_path} (1280x640)")
 
 
-def _compute_scrim_color(x, y, y_status, y_top):
-    """
-    Deterministic pure function computing the modern Android 15 System Share Modal Scrim
-    backdrop pixel at (x, y) for Y in [y_status, y_top + 70).
-    - Smooth vertical gradient from #0E1014 (14, 16, 20) at y_status=63 to #12151A (18, 21, 26) at y_top
-    - Ultra-low-contrast neutral gallery card silhouettes (diff <= 3 gray levels, zero saturation)
-    - Soft Ambient Occlusion vignette above the sheet top edge
-    """
-    span = max(1, y_top - y_status)
-    t = max(0.0, min(1.0, (y - y_status) / float(span)))
-    r = 14.0 + 4.0 * t
-    g = 16.0 + 5.0 * t
-    b = 20.0 + 6.0 * t
+_STATUS_BAR_ALPHA_B85 = (
+    "c-rmVd1w@89LDk0nntBjqNEZdqC~U}*hHk2LKS0cW30p~HXe;tN>y6hY82|7AV@{gQb>v7(RwRdv1l7f8;Y%pC^Yd_6l)D?)F>X&"
+    "B<7mVZ)SG0$LwTg-LX`^pFi}S_nm!rvNJsFyzk7c#{&QW0000000000000000000000000z>|2fYw9~=r!V+o!q8r=quTM$rMe@0"
+    "#=x^AHgm=CCdH?=Y|ET?W1`i0xwlt7XW*F;le4cz301lBHQQahe(-VuxdA*kUYc8>gmWRklfBrutSGllTT-&JvThl@Jyy$a@PPyW"
+    "d+`hJC|0VLw6_-<ielEXH>AVAT>3-0jsI%NC#Eg0&e>K}ylZJjKxM~|*Y7RfvM8A&0C1|+{A#5o*T>t74YS;6(-_)cdl&wWq-E!1"
+    "bf(CpDS6Lh<BiXZYp$JJsn^wS>da99IMS{}vEy)OJF#Jw8|_Sb>lFRJW2TV;Cb==>R`WYIt?<@vY_2?=z;OULF-o!LOFOag-{r<S"
+    "Z`Yx@(ML~|ntS>RpX;?tw1sND@>h-nz=`*4=EfvDv0;@P=kyCW>Ric<LhUUsZph6U5Yo0=nvQ11czPDf>B?2DGEGj-DyPMGMx2-C"
+    "k2nwjCyH&w#<3Ue#D-OFbk)xpT=~8+Nk%qqO)+ij{77v(q+f`#O5S{gls3q~hBi#vUAF!>#{u9(hYL1h<9dRv*s#crYJKUL8@Um8"
+    "P3`kqnt9_$c|&73w3n0@OG)OP_ZXog!ya#OAOKGEyx(GMRHxaC4U613<$qQb<=mJjUmk`B=f(CNqvZeeZK@td<pXt1xj3z#Y{g`w"
+    "Qie^JavT7Tq&Kt>8%<d@W5Xghe$p1sxsn^l)h>4h)n(KxN<(m#cpe$wH^$0V^ffB~P|Lq?7y!;pZy`4p*o_T~+*mH<iLT72q{tN_"
+    ">7H&=^75v1_g1c!_gNdX<`}7zQH`lmNHS`FRLi9t1%N|qEn{P+?bxu$4eg}hiYvJ>OYN~dbzi;oTvyabul!n;mIbbubXG=qr8Hhz"
+    "y;ConWGaS(0C4DqLsnBMv9@EwA~*W`f3JydZfsV2yj1D!`(}TwvdalYIhE*JXYkuYvzN>8>BAw~hRd3>{Bon5g8*<U{_jYpQbJ-Q"
+    "d~P(hQHy)z0*>ma=f<Cb+i*^wbB!4^$nPlt4~@o(k@~X4%ptuPcS$W@;TQlM>s{r1DkU^F!so_S@8YngsON@u<(6`JVP?j1ZE9$t"
+    "$vQ@ETpMUCZ<nP{rPRJiyX%)j0B|m&(L6V@oWw@>+&E|~b+{S*^Azpb9>sA|94g;t&WFzp<+1UIkbyE9Qnzm8u=y9Ydd5Y8NX#;g"
+    "jYW=PBYbY$DJ?xLOS@ed-?*Xn_)kZ@yvBdP)6Zu!a`SiGmd15@#rJ_5zMlgCh{R?`Qz@pgVR>I$iMo)jxRe_|807)d{p>I+CjKrX"
+    "E$Ldh?Qh=gI&)P0XBGP&h(t{2q)J(=v)HiAjaeSg%lF*K4cU~9-US)qSQ&23#Jg(iR%0Pgn-#uO5HI5+Q`!GOMB>YXr&1Cf#)f5X"
+    "boF=+xH1oW(*JT%nQJW!yQ++Vp7kxgnKLaj#?!k|QR=&~`+>-$RN0(L2^Sld_tCp{{f2~r@Ann%1>bCvker<CyNXn9gRKa9d4cz0"
+    "FaVLrXtFhx5;iuha-+c0<B>bLA&=mBV2q1u7jy-jbjV2QP4B|)&`U#8?^}$B0BG4<zYNHC9vfD<F~n2q((}IhH#Bdpq(no&NylP&"
+    "!@<T7j+}`d2zYVwDVdFlW7h+b+u8C|ibZT#<i`D0^IUsQpbVQ-WlAZl#`n}e?|t;z3`<!Tt*$UQ591fecu3=i?0Db_#2#yDD#a=`"
+    "EOKLS?;6)~V^FO;KXlE6ob}bd$9Og0N3UImUcPkH@LX-esKR^Q{KTzA$7>an+ur~<lyKd8D#bE3EOKMoNf)0>oaa9-^Nm*3d>?(k"
+    "8~$5Z<NHa6)kaMt&+Gx7l=j5l+O&vb!{WZS0#~1Bo?qvC#?W_qjo*Fr{ZIH!EsymC<;L03>~r9WjjmJbv%@tODUs#I-FkO_2Vqc&"
+    "cFIwI<b9(e;6D1<W%}JW<=-ZG{BxuF^!73Aa3C69nUNB<&HC$x+3&-)eLBCp<Vnn)F>{>XOiJK=^xY=p&Ys*i-~~NX6WQ0m(@=2R"
+    "A~wu_k3RG#s~@-Kg9Kn@*#6Q$B_Hsi00000000000000000000000000001<L;nIJ?()O"
+)
 
-    # Ultra-low-contrast neutral dark gallery grid silhouettes (simulating dimmed photo grid under system share scrim)
-    if 168 <= y <= y_top - 85:
-        col_hit = (48 <= x <= 524) or (556 <= x <= 1032)
-        row_rel = (y - 168) % 324
-        if col_hit and (0 <= row_rel < 296):
-            tx = (x - 48) if x <= 524 else (x - 556)
-            ty = row_rel
-            tw, th, tr = 476, 296, 24
-            in_tile = True
-            if tx < tr and ty < tr and math.hypot(tx - tr, ty - tr) > tr:
-                in_tile = False
-            elif tx > tw - tr and ty < tr and math.hypot(tx - (tw - tr), ty - tr) > tr:
-                in_tile = False
-            elif tx < tr and ty > th - tr and math.hypot(tx - tr, ty - (th - tr)) > tr:
-                in_tile = False
-            elif tx > tw - tr and ty > th - tr and math.hypot(tx - (tw - tr), ty - (th - tr)) > tr:
-                in_tile = False
-            if in_tile:
-                r += 2.0
-                g += 2.0
-                b += 2.0
 
-    # Soft Ambient Occlusion vignette within 60px above the sheet top edge
-    dist_above = y_top - y
-    if dist_above <= 60:
-        ao_t = max(0.0, min(1.0, (60.0 - max(0.0, float(dist_above))) / 60.0))
-        ao_drop = 3.5 * (ao_t ** 1.6)
-        r -= ao_drop
-        g -= ao_drop
-        b -= ao_drop
+def _load_wallpaper_1080():
+    wp_path = os.path.join(SCREENSHOT_DIR, "wallpaper-backdrop.jpg")
+    wp_orig = Image.open(wp_path).convert("RGB")
+    scale = max(1080.0 / wp_orig.width, 2400.0 / wp_orig.height)
+    new_w = int(round(wp_orig.width * scale))
+    new_h = int(round(wp_orig.height * scale))
+    wp_resized = wp_orig.resize((new_w, new_h), Image.Resampling.LANCZOS)
+    left = (new_w - 1080) // 2
+    top = (new_h - 2400) // 2
+    return wp_resized.crop((left, top, left + 1080, top + 2400))
 
+
+def _compute_backdrop_pixel(wp_pix, x, y, y_top):
+    wr, wg, wb = wp_pix[x, y]
+    if x < 70:
+        sheet_edge_y = (y_top + 70.0) - math.sqrt(max(0.0, 70.0 ** 2 - (x - 70.0) ** 2))
+    elif x > 1009:
+        sheet_edge_y = (y_top + 70.0) - math.sqrt(max(0.0, 70.0 ** 2 - (x - 1009.0) ** 2))
+    else:
+        sheet_edge_y = float(y_top)
+    dist = sheet_edge_y - float(y)
+    if 0.0 <= dist <= 56.0:
+        s_t = (1.0 - dist / 56.0) ** 2.2
+        shadow_mul = 1.0 - 0.18 * s_t
+        wr *= shadow_mul
+        wg *= shadow_mul
+        wb *= shadow_mul
     return (
-        int(round(max(0.0, min(255.0, r)))),
-        int(round(max(0.0, min(255.0, g)))),
-        int(round(max(0.0, min(255.0, b)))),
+        int(round(max(0.0, min(255.0, wr)))),
+        int(round(max(0.0, min(255.0, wg)))),
+        int(round(max(0.0, min(255.0, wb)))),
     )
 
 
 def refine_screenshot_backdrops():
     """
-    Adaptive Sandwich Scrim Compositing for docs/screenshots/01~04.png:
+    Adaptive Sandwich Wallpaper Compositing for docs/screenshots/01~04.png:
     1. Dynamically detects along X = 540:
-       - Top status bar bottom edge y_status = 63 (Y: 0..62 preserved 100% intact)
        - Bottom sheet top edge y_top (1205 for 01/02, 1352 for 03/04)
-    2. Replaces only the legacy emulator launcher backdrop in Y in [y_status, y_top)
-       and the outer corner regions in Y in [y_top, y_top + 70) with a deterministic
-       Android 15 System Modal Scrim Backdrop.
+    2. Composites the edge-to-edge bright frosted glass wallpaper (docs/screenshots/wallpaper-backdrop.jpg)
+       across Y in [0, y_top + 70) with dark Android 15 status bar icons in Y: 0..62 and a soft Material 3
+       elevation shadow above the bottom sheet.
     3. Strictly idempotent (running 1 or N times produces bit-identical PNGs).
     """
     screenshot_files = [
@@ -701,9 +710,16 @@ def refine_screenshot_backdrops():
         "04-transferring-420bwry.png",
     ]
 
+    wp_1080 = _load_wallpaper_1080()
+    wp_pix = wp_1080.load()
+    assert wp_pix is not None
+    status_alpha = zlib.decompress(base64.b85decode(_STATUS_BAR_ALPHA_B85))
+    col_status_dark = (28, 30, 33)
+
     r_corner = 70.0
     x_left_c = 70.0
     x_right_c = 1009.0
+    y_status = 63
 
     for fname in screenshot_files:
         fpath = os.path.join(SCREENSHOT_DIR, fname)
@@ -717,12 +733,6 @@ def refine_screenshot_backdrops():
         assert pixels is not None
 
         # 1. Dynamic boundary detection along center axis X = 540
-        y_status = 63
-        for y in range(h):
-            if pixels[540, y] != (0, 0, 0):
-                y_status = y
-                break
-
         y_top = None
         for y in range(500, h):
             if pixels[540, y] == COL_SHEET:
@@ -734,14 +744,24 @@ def refine_screenshot_backdrops():
         y_full = y_top + 70
         y_center = float(y_full)
 
-        # 2. Upper backdrop replacement: Y in [y_status, y_top)
+        # 2. Edge-to-edge status bar (Y: 0..62) with dark icons over bright wallpaper
+        for y in range(y_status):
+            row_off = y * 1080
+            for x in range(w):
+                icon_a = status_alpha[row_off + x] / 255.0
+                br, bg, bb = _compute_backdrop_pixel(wp_pix, x, y, y_top)
+                pixels[x, y] = (
+                    int(round(icon_a * col_status_dark[0] + (1.0 - icon_a) * br)),
+                    int(round(icon_a * col_status_dark[1] + (1.0 - icon_a) * bg)),
+                    int(round(icon_a * col_status_dark[2] + (1.0 - icon_a) * bb)),
+                )
+
+        # 3. Upper backdrop replacement: Y in [y_status, y_top)
         for y in range(y_status, y_top):
             for x in range(w):
-                pixels[x, y] = _compute_scrim_color(x, y, y_status, y_top)
+                pixels[x, y] = _compute_backdrop_pixel(wp_pix, x, y, y_top)
 
-        # 3. Rounded corner transition zone: Y in [y_top, y_full)
-        # Preserve interior sheet pixels (including center drag handle) 100% untouched;
-        # deterministically synthesize outer corner & AA arc pixels from COL_SHEET and C_scrim.
+        # 4. Rounded corner transition zone: Y in [y_top, y_full)
         for y in range(y_top, y_full):
             for x in range(w):
                 if x < 70:
@@ -749,15 +769,13 @@ def refine_screenshot_backdrops():
                 elif x > 1009:
                     d = math.hypot(x - x_right_c, y - y_center)
                 else:
-                    # Interior between left & right rounded corners (includes drag handle): keep 100% original
                     continue
 
                 if d <= r_corner - 1.0:
-                    # Strictly inside the rounded corner body: keep 100% original
                     continue
 
                 alpha = max(0.0, min(1.0, r_corner - d))
-                c_scrim = _compute_scrim_color(x, y, y_status, y_top)
+                c_scrim = _compute_backdrop_pixel(wp_pix, x, y, y_top)
                 out_r = int(round(alpha * COL_SHEET[0] + (1.0 - alpha) * c_scrim[0]))
                 out_g = int(round(alpha * COL_SHEET[1] + (1.0 - alpha) * c_scrim[1]))
                 out_b = int(round(alpha * COL_SHEET[2] + (1.0 - alpha) * c_scrim[2]))
