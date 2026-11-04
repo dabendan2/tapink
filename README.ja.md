@@ -14,7 +14,7 @@
 [![Download APK](https://img.shields.io/badge/Android_APK_をダウンロード-tapink--release.apk_(840_KB)-0B57D0?style=for-the-badge&logo=android&logoColor=white)](https://github.com/dabendan2/tapink/releases/latest/download/tapink-release.apk)
 [![Obtainium](https://img.shields.io/badge/Obtainium-更新追跡に追加-5A32A3?style=for-the-badge&logo=android&logoColor=white)](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/dabendan2/tapink)
 
-[![Release](https://img.shields.io/badge/バージョン-v2.4.0-1F1F1F?style=flat-square)](https://github.com/dabendan2/tapink/releases/latest)
+[![Release](https://img.shields.io/badge/バージョン-v0.9.0-1F1F1F?style=flat-square)](https://github.com/dabendan2/tapink/releases/latest)
 [![Platform](https://img.shields.io/badge/対応OS-Android%207.0%20~%2015%2B-00639B?style=flat-square)](#ダウンロードとインストール-download--install)
 [![Privacy](https://img.shields.io/badge/プライバシー設計-完全端末内処理・通信権限ゼロ-146C2E?style=flat-square)](docs/privacy-policy.md)
 [![License: MIT](https://img.shields.io/badge/ライセンス-MIT-444746?style=flat-square)](LICENSE)
@@ -92,10 +92,10 @@ TapInk はパッシブ NFC 給電・通信方式を採用した電子ペーパ�
 <summary><b>クリックして展開：APK SHA-256 チェックサム、ビルド環境、テストコマンド</b></summary>
 <br />
 
-### リリース APK SHA-256 チェックサム (`v2.4.0`)
+### リリース APK SHA-256 チェックサム (`v0.9.0`)
 以下のハッシュ値を使用して [`tapink-release.apk`](https://github.com/dabendan2/tapink/releases/latest/download/tapink-release.apk) のファイル完全性を検証できます（Releases ページの `SHA256SUMS.txt` にも記録されています）：
 ```text
-4c4e98cb8956bd3e9ddc08047c8fc4028d941f4bca083ffd51fe42b191362009  tapink-release.apk
+813ad0969c00f9b42fcc652dec21a9c678e7fe09c74428a2bc31c2cf4121bf05  tapink-release.apk
 ```
 
 ### ソースコードからのビルドとテスト

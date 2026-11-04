@@ -14,7 +14,7 @@
 [![Download APK](https://img.shields.io/badge/Download_Android_APK-tapink--release.apk_(840_KB)-0B57D0?style=for-the-badge&logo=android&logoColor=white)](https://github.com/dabendan2/tapink/releases/latest/download/tapink-release.apk)
 [![Obtainium](https://img.shields.io/badge/Obtainium-Add_to_Obtainium-5A32A3?style=for-the-badge&logo=android&logoColor=white)](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/dabendan2/tapink)
 
-[![Release](https://img.shields.io/badge/Release-v2.4.0-1F1F1F?style=flat-square)](https://github.com/dabendan2/tapink/releases/latest)
+[![Release](https://img.shields.io/badge/Release-v0.9.0-1F1F1F?style=flat-square)](https://github.com/dabendan2/tapink/releases/latest)
 [![Platform](https://img.shields.io/badge/Platform-Android%207.0%20~%2015%2B-00639B?style=flat-square)](#download--install)
 [![Privacy](https://img.shields.io/badge/Privacy-100%25%20On--Device・Zero%20Network%20Permission-146C2E?style=flat-square)](docs/privacy-policy.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-444746?style=flat-square)](LICENSE)
@@ -92,10 +92,10 @@ TapInk supports passive NFC-powered E-Paper displays, smart badges, desk signs, 
 <summary><b>Expand to view: APK SHA-256 Checksum, Build Environment & Test Commands</b></summary>
 <br />
 
-### Release APK SHA-256 Checksum (`v2.4.0`)
+### Release APK SHA-256 Checksum (`v0.9.0`)
 Verify the integrity of [`tapink-release.apk`](https://github.com/dabendan2/tapink/releases/latest/download/tapink-release.apk) using the SHA-256 hash below (also recorded in `SHA256SUMS.txt` on the Releases page):
 ```text
-4c4e98cb8956bd3e9ddc08047c8fc4028d941f4bca083ffd51fe42b191362009  tapink-release.apk
+813ad0969c00f9b42fcc652dec21a9c678e7fe09c74428a2bc31c2cf4121bf05  tapink-release.apk
 ```
 
 ### Build & Test from Source

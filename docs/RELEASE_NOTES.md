@@ -1,4 +1,4 @@
-# TapInk 瞬墨 v2.4.0
+# TapInk 瞬墨 v0.9.0
 
 **從系統分享選單直接更新無電池 NFC 電子紙——自動辨識尺寸、精準色彩抖動、100% 本機離線處理。**  
 *Update battery-free NFC E-Paper displays directly from Android's share sheet—100% offline.*
@@ -9,7 +9,7 @@
 
 請在 Android 手機上直接下載安裝包（`.apk`），開啟檔案即可完成安裝：
 
-### [下載 Android 安裝包 (`tapink-release.apk`, 840 KB)](https://github.com/dabendan2/tapink/releases/download/v2.4.0/tapink-release.apk)
+### [下載 Android 安裝包 (`tapink-release.apk`, 840 KB)](https://github.com/dabendan2/tapink/releases/download/v0.9.0/tapink-release.apk)
 *支援具備 NFC 功能的 Android 7.0 至 Android 15+ 裝置*
 
 > **隱私與安全說明**  
@@ -26,7 +26,7 @@
 
 ---
 
-## v2.4.0 重點功能與更新
+## v0.9.0 重點功能與更新
 
 ### 1. 整合 Android 系統分享選單
 將電子紙更新流程融入日常看圖與設計動線。在任何支援分享的 App 中點選分享即可喚出感應面板，更新完成後自動收起並返回原畫面，無需額外切換應用程式。
@@ -52,7 +52,7 @@
 - **底層更新**：升級 Target SDK 35 與 Kotlin 2.x (K2) 編譯環境，強化 NFC 分塊重試機制與 LZO 壓縮邊界檢查，並通過 JVM 單元測試與模擬器 E2E 驗證。
 - **SHA-256 校驗碼 (`SHA256SUMS.txt`)**：
   ```text
-  4c4e98cb8956bd3e9ddc08047c8fc4028d941f4bca083ffd51fe42b191362009  tapink-release.apk
+  813ad0969c00f9b42fcc652dec21a9c678e7fe09c74428a2bc31c2cf4121bf05  tapink-release.apk
   ```
 
 </details>
