@@ -54,7 +54,7 @@ object FloydSteinbergDitherer {
             paletteRgb = arrayOf(
                 intArrayOf(0, 0, 0),       // 0: Black (00b)
                 intArrayOf(255, 255, 255), // 1: White (01b)
-                intArrayOf(255, 255, 0),   // 2: Yellow (10b) — quantization vertex (0x6c18a8)
+                intArrayOf(255, 192, 0),   // 2: Yellow (10b) — official EZ Sign 4-color vertex RGB(255,192,0) (0x6c1970)
                 intArrayOf(255, 0, 0)      // 3: Red (11b)
             ),
             paletteArgb = intArrayOf(
@@ -136,15 +136,6 @@ object FloydSteinbergDitherer {
             v < 0 -> 0
             v > 255 -> 255
             else -> v
-        }
-    }
-
-    private fun attenuateError(rawErr: Int): Int {
-        val absErr = kotlin.math.abs(rawErr)
-        return when {
-            absErr < 64 -> 0
-            absErr < 128 -> rawErr / 2
-            else -> rawErr
         }
     }
 
@@ -236,9 +227,10 @@ object FloydSteinbergDitherer {
                 outArgb[idx] = paletteArgb[palIdx]
 
                 val p = paletteRgb[palIdx]
-                val deltaR = attenuateError(oldR - p[0]) shr 2
-                val deltaG = attenuateError(oldG - p[1]) shr 2
-                val deltaB = attenuateError(oldB - p[2]) shr 2
+                // Official EZ Sign error diffusion (0x6c0e6c: lsl x0, x3, #1; asr x4, x0, #4 => err >> 3, 1/8 per neighbor)
+                val deltaR = (oldR - p[0]) shr 3
+                val deltaG = (oldG - p[1]) shr 3
+                val deltaB = (oldB - p[2]) shr 3
 
                 if (deltaR != 0 || deltaG != 0 || deltaB != 0) {
                     if (x + 1 < width) {

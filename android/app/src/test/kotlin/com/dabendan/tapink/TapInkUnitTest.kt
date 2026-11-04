@@ -93,7 +93,7 @@ object TapInkUnitTest {
         )
         assertEquals(7750, bwry213Res.packedHardwareBytes.size, "2.13\" packed size must be 7,750 bytes")
 
-        // 4. Official EZ Sign algorithm parity:
+        // 4. Official EZ Sign algorithm parity (libapp.so @ 0x6c07f0 / 0x6c1970):
         //    a) Warm cream parchment background RGB(255, 244, 216) must stay 100% pure White (index 1) without yellow speckles
         val creamPixels = IntArray(400 * 300) { 0xFFFFF4D8.toInt() }
         val creamRes = FloydSteinbergDitherer.ditherAndPackPixels(
@@ -109,25 +109,25 @@ object TapInkUnitTest {
             "Warm cream background RGB(255,244,216) must stay 100% pure White (index 1)"
         )
 
-        //    b) Neutral gray RGB(128, 128, 128) in 4-color BWRY must only use Black (0) and White (1), never Red/Yellow
-        val neutralGray400 = IntArray(400 * 300) { 0xFF808080.toInt() }
-        val gray4ColorRes = FloydSteinbergDitherer.ditherAndPackPixels(
+        //    b) Warm golden yellow RGB(240, 179, 54) (e.g. ukiyo-e clouds/boats) must stay 100% pure Yellow (index 2) without red contamination
+        val goldenYellowPixels = IntArray(400 * 300) { 0xFFF0B336.toInt() }
+        val goldenYellowRes = FloydSteinbergDitherer.ditherAndPackPixels(
             width = 400,
             height = 300,
-            argbPixels = neutralGray400,
+            argbPixels = goldenYellowPixels,
             colorMode = FloydSteinbergDitherer.ColorMode.BWRY_4COLOR,
             hwWidth = 400,
             hwHeight = 300
         )
         assertTrue(
-            gray4ColorRes.paletteIndices.all { it.toInt() == 0 || it.toInt() == 1 },
-            "Neutral gray in 4-color BWRY must only emit Black (0) and White (1)"
+            goldenYellowRes.paletteIndices.all { it.toInt() == 2 },
+            "Warm golden yellow RGB(240,179,54) must stay 100% pure Yellow (index 2) with zero Red speckle contamination"
         )
 
-        //    c) Dual-palette Yellow: quantization uses (255, 255, 0) while preview ARGB uses #FFC000 (0xFFFFC000)
+        //    c) Official 4-color BWRY Yellow vertex uses RGB(255, 192, 0) (#FFC000, 0x6c1970) for both quantization and preview
         assertTrue(
-            FloydSteinbergDitherer.ColorMode.BWRY_4COLOR.paletteRgb[2].contentEquals(intArrayOf(255, 255, 0)),
-            "BWRY quantization yellow must be (255, 255, 0)"
+            FloydSteinbergDitherer.ColorMode.BWRY_4COLOR.paletteRgb[2].contentEquals(intArrayOf(255, 192, 0)),
+            "BWRY quantization yellow must be (255, 192, 0) matching official libapp.so @ 0x6c1970"
         )
         assertEquals(
             0xFFFFC000.toInt(),
