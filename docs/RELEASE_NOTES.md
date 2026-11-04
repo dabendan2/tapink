@@ -52,7 +52,7 @@
 - **底層更新**：升級 Target SDK 35 與 Kotlin 2.x (K2) 編譯環境，強化 NFC 分塊重試機制與 LZO 壓縮邊界檢查，並通過 JVM 單元測試與模擬器 E2E 驗證。
 - **SHA-256 校驗碼 (`SHA256SUMS.txt`)**：
   ```text
-  813ad0969c00f9b42fcc652dec21a9c678e7fe09c74428a2bc31c2cf4121bf05  tapink-release.apk
+  40cffc5d9ff5ea2064ad7f097ff241bc0f69cabbf6ed9416d6c2f1fa3e7a36aa  tapink-release.apk
   ```
 
 </details>

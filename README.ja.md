@@ -95,7 +95,7 @@ TapInk はパッシブ NFC 給電・通信方式を採用した電子ペーパ�
 ### リリース APK SHA-256 チェックサム (`v0.9.0`)
 以下のハッシュ値を使用して [`tapink-release.apk`](https://github.com/dabendan2/tapink/releases/latest/download/tapink-release.apk) のファイル完全性を検証できます（Releases ページの `SHA256SUMS.txt` にも記録されています）：
 ```text
-813ad0969c00f9b42fcc652dec21a9c678e7fe09c74428a2bc31c2cf4121bf05  tapink-release.apk
+40cffc5d9ff5ea2064ad7f097ff241bc0f69cabbf6ed9416d6c2f1fa3e7a36aa  tapink-release.apk
 ```
 
 ### ソースコードからのビルドとテスト

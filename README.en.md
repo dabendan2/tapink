@@ -95,7 +95,7 @@ TapInk supports passive NFC-powered E-Paper displays, smart badges, desk signs, 
 ### Release APK SHA-256 Checksum (`v0.9.0`)
 Verify the integrity of [`tapink-release.apk`](https://github.com/dabendan2/tapink/releases/latest/download/tapink-release.apk) using the SHA-256 hash below (also recorded in `SHA256SUMS.txt` on the Releases page):
 ```text
-813ad0969c00f9b42fcc652dec21a9c678e7fe09c74428a2bc31c2cf4121bf05  tapink-release.apk
+40cffc5d9ff5ea2064ad7f097ff241bc0f69cabbf6ed9416d6c2f1fa3e7a36aa  tapink-release.apk
 ```
 
 ### Build & Test from Source

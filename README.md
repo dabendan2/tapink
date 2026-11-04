@@ -95,7 +95,7 @@ TapInk 支援採用無源 NFC 供電與通訊之電子紙顯示器、智慧識�
 ### 發行包 SHA-256 校驗碼 (`v0.9.0`)
 可透過以下雜湊值驗證 [`tapink-release.apk`](https://github.com/dabendan2/tapink/releases/latest/download/tapink-release.apk) 檔案完整性（同步記錄於 Release 頁面之 `SHA256SUMS.txt`）：
 ```text
-813ad0969c00f9b42fcc652dec21a9c678e7fe09c74428a2bc31c2cf4121bf05  tapink-release.apk
+40cffc5d9ff5ea2064ad7f097ff241bc0f69cabbf6ed9416d6c2f1fa3e7a36aa  tapink-release.apk
 ```
 
 ### 從原始碼建置與測試
